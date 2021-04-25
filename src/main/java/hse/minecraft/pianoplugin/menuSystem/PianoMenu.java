@@ -6,6 +6,8 @@ import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
+import java.time.Duration;
+import java.time.Instant;
 import java.util.HashMap;
 
 import static org.bukkit.Material.*;
@@ -16,7 +18,7 @@ import static org.bukkit.Sound.*;
  * Меню пианино
  */
 public class PianoMenu extends Menu {
-
+    boolean recording = false;
     //Мап содержащий название звука блока и сам Sound
     public static final HashMap<String, Sound> blockSounds = new HashMap<>();
 
@@ -50,6 +52,8 @@ public class PianoMenu extends Menu {
 
     @Override
     public void handleMenu(InventoryClickEvent event) {
+        Instant start = null, finish;
+
         Player player = playerMenuUtil.getOwner();
 
         if (event == null) return;
@@ -64,7 +68,21 @@ public class PianoMenu extends Menu {
 
         switch (event.getCurrentItem().getType()) {
             case EMERALD:
-                playerMenuUtil.getOwner().sendMessage(ChatColor.GREEN + "SSD");
+                if (!recording) {
+                    start = Instant.now();
+                    playerMenuUtil.getOwner().sendMessage(ChatColor.GREEN + "SSD");
+                    System.out.println(start.toString());
+                    recording = true;
+                } else {
+                    finish = Instant.now();
+                    long timeElapsed = 0;
+                    System.out.println(finish.toString());
+                    if (start != null) {
+                        timeElapsed = Duration.between(start, finish).toMillis();
+                    }
+                    System.out.println("MS: " + timeElapsed);
+                    recording = false;
+                }
                 break;
             //Случай выхода
             case BARRIER:
@@ -137,7 +155,7 @@ public class PianoMenu extends Menu {
      * @param count номер цвета
      * @return стекло нужного цвета
      */
-    private ItemStack getGlassStack(String name, int count) {
+    public ItemStack getGlassStack(String name, int count) {
         ItemStack itemStack = new ItemStack(STAINED_GLASS_PANE, 1, (short) count);
         ItemMeta meta = itemStack.getItemMeta();
         meta.setDisplayName(name);
@@ -159,7 +177,7 @@ public class PianoMenu extends Menu {
         }
     }
 
-    private ItemStack getItem(String name, Material mat) {
+    public ItemStack getItem(String name, Material mat) {
         ItemStack itemStack = new ItemStack(mat, 1);
         ItemMeta meta = itemStack.getItemMeta();
         meta.setDisplayName(name);
