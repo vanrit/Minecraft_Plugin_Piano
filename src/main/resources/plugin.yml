@@ -1,0 +1,6 @@
+name: PianoPlugin
+version: ${project.version}
+main: hse.minecraft.pianoplugin.PianoPlugin
+commands:
+  piano:
+    description: show piano inventory panel
