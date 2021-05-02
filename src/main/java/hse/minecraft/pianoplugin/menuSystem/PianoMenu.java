@@ -1,5 +1,7 @@
 package hse.minecraft.pianoplugin.menuSystem;
 
+import hse.minecraft.pianoplugin.Music.Music;
+import hse.minecraft.pianoplugin.Music.MusicSample;
 import org.bukkit.*;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryClickEvent;
@@ -8,6 +10,7 @@ import org.bukkit.inventory.meta.ItemMeta;
 
 import java.time.Duration;
 import java.time.Instant;
+import java.util.ArrayList;
 import java.util.HashMap;
 
 import static org.bukkit.Material.*;
@@ -19,6 +22,8 @@ import static org.bukkit.Sound.*;
  */
 public class PianoMenu extends Menu {
     boolean recording = false;
+    Music music;
+
     //Мап содержащий название звука блока и сам Sound
     public static final HashMap<String, Sound> blockSounds = new HashMap<>();
 
@@ -52,8 +57,6 @@ public class PianoMenu extends Menu {
 
     @Override
     public void handleMenu(InventoryClickEvent event) {
-        Instant start = null, finish;
-
         Player player = playerMenuUtil.getOwner();
 
         if (event == null) return;
@@ -69,18 +72,22 @@ public class PianoMenu extends Menu {
         switch (event.getCurrentItem().getType()) {
             case EMERALD:
                 if (!recording) {
-                    start = Instant.now();
-                    playerMenuUtil.getOwner().sendMessage(ChatColor.GREEN + "SSD");
-                    System.out.println(start.toString());
+                    music = new Music();
+                    playerMenuUtil.setStart(Instant.now());
+                    System.out.println(playerMenuUtil.getStart().toString());
                     recording = true;
                 } else {
-                    finish = Instant.now();
+                    playerMenuUtil.setFinish(Instant.now());
                     long timeElapsed = 0;
-                    System.out.println(finish.toString());
-                    if (start != null) {
-                        timeElapsed = Duration.between(start, finish).toMillis();
-                    }
+                    timeElapsed = Duration.between(playerMenuUtil.getStart(), playerMenuUtil.getFinish()).toMillis();
                     System.out.println("MS: " + timeElapsed);
+
+                    //Добавление музыки
+                    music.setName(playerMenuUtil.getStart().toString());
+                    music.setTimeLength(timeElapsed);
+                    addMusic(music);
+
+                    System.out.println(playerMenuUtil.getFinish().toString());
                     recording = false;
                 }
                 break;
@@ -97,6 +104,7 @@ public class PianoMenu extends Menu {
                     if (count == 9) break;
                     //Выводим звук, по соответсвующему названию
                     if (event.getCurrentItem().getItemMeta().getDisplayName().equals(entry.getKey())) {
+                        setTime(entry.getKey());
                         player.playSound(player.getLocation(), entry.getValue(), 20.0F, 20.0F);
                         player.getWorld().playEffect(player.getLocation().add(0.0D, 1.5D, 0.0D), Effect.RECORD_PLAY, 2);
                     }
@@ -195,4 +203,32 @@ public class PianoMenu extends Menu {
         ItemStack pointer = getItem("Pointer", GOLD_INGOT);
         inventory.remove(pointer);
     }
+
+    /**
+     * Запись времени воспроизведения звука игроком
+     *
+     * @param name имя звука
+     */
+    private void setTime(String name) {
+        if (recording) {
+            long timeElapsed = 0;
+            timeElapsed = Duration.between(playerMenuUtil.getStart(), Instant.now()).toMillis();
+            System.out.println(name + ":" + timeElapsed);
+            music.getMusic().add(new MusicSample(name, timeElapsed));
+        }
+    }
+
+    /**
+     * Добавление музыки в плейлист и вывод звуков
+     *
+     * @param music музыка
+     */
+    private void addMusic(Music music) {
+        System.out.println("ADDED to playlist " + music.getName() + "; Time:" + music.getTimeLength());
+        for (int i = 0; i < music.getMusic().size(); i++) {
+            System.out.println(music.getMusic().get(i).getTime() + "  " + music.getMusic().get(i).getSoundName());
+        }
+        playerMenuUtil.addToPlaylist(music);
+    }
+
 }

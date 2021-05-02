@@ -5,8 +5,8 @@ import java.util.ArrayList;
 
 public class Music implements Serializable {
     protected String name;
-    protected int timeLength;
-    protected ArrayList<MusicSample> music;
+    protected long timeLength;
+    protected ArrayList<MusicSample> music=new ArrayList<>();;
 
     public String getName() {
         return name;
@@ -16,11 +16,11 @@ public class Music implements Serializable {
         this.name = name;
     }
 
-    public int getTimeLength() {
+    public long getTimeLength() {
         return timeLength;
     }
 
-    public void setTimeLength(int timeLength) {
+    public void setTimeLength(long timeLength) {
         this.timeLength = timeLength;
     }
 

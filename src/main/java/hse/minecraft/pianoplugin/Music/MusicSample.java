@@ -6,6 +6,11 @@ public class MusicSample implements Serializable {
     protected String SoundName;
     protected long time;
 
+    public MusicSample(String soundName, long time) {
+        SoundName = soundName;
+        this.time = time;
+    }
+
     public String getSoundName() {
         return SoundName;
     }

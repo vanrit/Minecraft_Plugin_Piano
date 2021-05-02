@@ -22,7 +22,7 @@ public class MusicSerialization {
             FileInputStream fis = new FileInputStream(path);
             ObjectInputStream ois = new ObjectInputStream(fis);
 
-            music = (ArrayList) ois.readObject();
+            music = (ArrayList<MusicSample>) ois.readObject();
 
             ois.close();
             fis.close();

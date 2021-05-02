@@ -4,3 +4,5 @@ main: hse.minecraft.pianoplugin.PianoPlugin
 commands:
   piano:
     description: show piano inventory panel
+  plays:
+    description: play sound from minecraft from Enum Sound
