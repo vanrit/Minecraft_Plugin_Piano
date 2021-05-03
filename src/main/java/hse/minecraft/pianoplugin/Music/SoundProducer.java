@@ -18,14 +18,15 @@ public class SoundProducer {
             return false;
         try {
             Sound sound = Sound.valueOf(soundName);
-            player.playSound(player.getLocation(), sound, 20.0F, 20.0F);
-            player.getWorld().playEffect(player.getLocation().add(0.0D, 1.5D, 0.0D), Effect.RECORD_PLAY, 2);
+            makeSound(player, sound);
         } catch (IllegalArgumentException exception) {
             return false;
         }
-        catch (Exception exception) {
-            return false;
-        }
         return true;
+    }
+
+    static public void makeSound(Player player, Sound sound) {
+        player.playSound(player.getLocation(), sound, 20.0F, 20.0F);
+        player.getWorld().playEffect(player.getLocation().add(0.0D, 1.5D, 0.0D), Effect.RECORD_PLAY, 2);
     }
 }

@@ -1,12 +1,15 @@
 package hse.minecraft.pianoplugin.menuSystem;
 
 import hse.minecraft.pianoplugin.Music.Music;
+import hse.minecraft.pianoplugin.Music.MusicConductor;
 import hse.minecraft.pianoplugin.Music.MusicSample;
+import hse.minecraft.pianoplugin.PianoPlugin;
 import org.bukkit.*;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
+import org.bukkit.scheduler.BukkitRunnable;
 
 import java.time.Duration;
 import java.time.Instant;
@@ -74,20 +77,20 @@ public class PianoMenu extends Menu {
                 if (!recording) {
                     music = new Music();
                     playerMenuUtil.setStart(Instant.now());
-                    System.out.println(playerMenuUtil.getStart().toString());
+                    //System.out.println(playerMenuUtil.getStart().toString());
                     recording = true;
                 } else {
                     playerMenuUtil.setFinish(Instant.now());
                     long timeElapsed = 0;
                     timeElapsed = Duration.between(playerMenuUtil.getStart(), playerMenuUtil.getFinish()).toMillis();
-                    System.out.println("MS: " + timeElapsed);
+                    //System.out.println("MS: " + timeElapsed);
 
                     //Добавление музыки
                     music.setName(playerMenuUtil.getStart().toString());
                     music.setTimeLength(timeElapsed);
                     addMusic(music);
 
-                    System.out.println(playerMenuUtil.getFinish().toString());
+                    //System.out.println(playerMenuUtil.getFinish().toString());
                     recording = false;
                 }
                 break;
@@ -115,11 +118,18 @@ public class PianoMenu extends Menu {
                 break;
 
             case TNT:
-                deletePointerItem(4);
+                //TODO сделать отдельно для песенки и учитывать, что человек мог уже запустить поток, тогда надо пррервать
+                for (Music music : playerMenuUtil.getPlaylist()) {
+                    BukkitRunnable br = new MusicConductor(player, music);
+                    br.runTaskTimer(PianoPlugin.getPlugin(), 0, music.getTimeLength() / 60 * 20);
+                    PianoPlugin.tasks.put(playerMenuUtil.getUuid(), br);
+                }
+
+                //deletePointerItem(4);
                 break;
 
             case DIAMOND:
-                addPointerItem(4);
+                //addPointerItem(4);
                 break;
         }
     }
@@ -214,7 +224,7 @@ public class PianoMenu extends Menu {
             long timeElapsed = 0;
             timeElapsed = Duration.between(playerMenuUtil.getStart(), Instant.now()).toMillis();
             System.out.println(name + ":" + timeElapsed);
-            music.getMusic().add(new MusicSample(name, timeElapsed));
+            music.getMusicVector().add(new MusicSample(name, timeElapsed));
         }
     }
 
@@ -225,8 +235,8 @@ public class PianoMenu extends Menu {
      */
     private void addMusic(Music music) {
         System.out.println("ADDED to playlist " + music.getName() + "; Time:" + music.getTimeLength());
-        for (int i = 0; i < music.getMusic().size(); i++) {
-            System.out.println(music.getMusic().get(i).getTime() + "  " + music.getMusic().get(i).getSoundName());
+        for (int i = 0; i < music.getMusicVector().size(); i++) {
+            System.out.println(music.getMusicVector().get(i).getTime() + "  " + music.getMusicVector().get(i).getSoundName());
         }
         playerMenuUtil.addToPlaylist(music);
     }

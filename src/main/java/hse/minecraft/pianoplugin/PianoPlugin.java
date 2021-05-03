@@ -10,13 +10,16 @@ import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.java.JavaPlugin;
+import org.bukkit.scheduler.BukkitRunnable;
 
 import java.util.HashMap;
+import java.util.UUID;
 
 public final class PianoPlugin extends JavaPlugin {
     private static Plugin plugin;
     //Меню каждого игрока
     private static final HashMap<Player, PlayerMenuUtil> menuUtilHashMap = new HashMap<>();
+    public static final HashMap<UUID, BukkitRunnable> tasks = new HashMap<UUID,BukkitRunnable>();
 
     @Override
     public void onEnable() {

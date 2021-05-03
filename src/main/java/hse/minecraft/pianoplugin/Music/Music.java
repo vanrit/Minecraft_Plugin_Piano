@@ -6,7 +6,8 @@ import java.util.ArrayList;
 public class Music implements Serializable {
     protected String name;
     protected long timeLength;
-    protected ArrayList<MusicSample> music=new ArrayList<>();;
+    protected ArrayList<MusicSample> musicVector = new ArrayList<>();
+    ;
 
     public String getName() {
         return name;
@@ -24,11 +25,11 @@ public class Music implements Serializable {
         this.timeLength = timeLength;
     }
 
-    public ArrayList<MusicSample> getMusic() {
-        return music;
+    public ArrayList<MusicSample> getMusicVector() {
+        return musicVector;
     }
 
-    public void setMusic(ArrayList<MusicSample> music) {
-        this.music = music;
+    public void setMusicVector(ArrayList<MusicSample> musicVector) {
+        this.musicVector = musicVector;
     }
 }
