@@ -2,9 +2,6 @@ package hse.minecraft.pianoplugin.Music;
 
 import hse.minecraft.pianoplugin.PianoPlugin;
 import hse.minecraft.pianoplugin.menuSystem.PianoMenu;
-import hse.minecraft.pianoplugin.menuSystem.PlayerMenuUtil;
-import org.bukkit.ChatColor;
-import org.bukkit.Effect;
 import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
 
@@ -13,7 +10,6 @@ import java.time.Instant;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.Queue;
-import java.util.Stack;
 
 public class MusicConductor extends BukkitRunnable {
     private final Player player;
@@ -49,7 +45,7 @@ public class MusicConductor extends BukkitRunnable {
 
             if (musicSampleQueue.peek() != null) {
                 long tempTime = musicSampleQueue.peek().getTime();
-                if (tempTime <= timeElapsed + 10 && tempTime >= timeElapsed - 10) {
+                if (tempTime <= timeElapsed + 3 && tempTime >= timeElapsed - 3) {
                     SoundProducer.makeSound(player, PianoMenu.blockSounds.get(musicSampleQueue.remove().SoundName));
                 }
             }

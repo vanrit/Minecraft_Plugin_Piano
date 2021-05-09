@@ -4,7 +4,10 @@ import hse.minecraft.pianoplugin.Music.Music;
 import hse.minecraft.pianoplugin.Music.MusicConductor;
 import hse.minecraft.pianoplugin.Music.MusicSample;
 import hse.minecraft.pianoplugin.PianoPlugin;
-import org.bukkit.*;
+import org.bukkit.ChatColor;
+import org.bukkit.Effect;
+import org.bukkit.Material;
+import org.bukkit.Sound;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.inventory.ItemStack;
@@ -15,6 +18,7 @@ import java.time.Duration;
 import java.time.Instant;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.UUID;
 
 import static org.bukkit.Material.*;
 import static org.bukkit.Sound.*;
@@ -38,10 +42,10 @@ public class PianoMenu extends Menu {
         blockSounds.put("FLUTE", BLOCK_NOTE_FLUTE);
         blockSounds.put("GUITAR", BLOCK_NOTE_GUITAR);
         blockSounds.put("HARP", BLOCK_NOTE_HARP);
-        blockSounds.put("HAT", BLOCK_NOTE_HAT);
+        //blockSounds.put("HAT", BLOCK_NOTE_HAT);
         blockSounds.put("PLING", BLOCK_NOTE_PLING);
         blockSounds.put("SNARE", BLOCK_NOTE_SNARE);
-        blockSounds.put("XYLOPHONE", BLOCK_NOTE_XYLOPHONE);
+        //blockSounds.put("XYLOPHONE", BLOCK_NOTE_XYLOPHONE);
     }
 
     public PianoMenu(PlayerMenuUtil playerMenuUtil) {
@@ -118,17 +122,26 @@ public class PianoMenu extends Menu {
                 break;
 
             case TNT:
+                ArrayList<Music> list = playerMenuUtil.getPlaylist();
+                if (list.isEmpty()) break;
+                Music lastMusic = list.get(list.size() - 1);
+
+                BukkitRunnable br = PianoPlugin.tasks.remove(player.getUniqueId());
+                if (br != null) br.cancel();
+
                 //TODO сделать отдельно для песенки и учитывать, что человек мог уже запустить поток, тогда надо пррервать
-                for (Music music : playerMenuUtil.getPlaylist()) {
-                    BukkitRunnable br = new MusicConductor(player, music);
-                    br.runTaskTimer(PianoPlugin.getPlugin(), 0, music.getTimeLength() / 60 * 20);
-                    PianoPlugin.tasks.put(playerMenuUtil.getUuid(), br);
-                }
+                br = new MusicConductor(player, lastMusic);
+                br.runTaskTimer(PianoPlugin.getPlugin(), 0, lastMusic.getTimeLength() / 60 * 20);
+                PianoPlugin.tasks.put(playerMenuUtil.getUuid(), br);
 
                 //deletePointerItem(4);
                 break;
 
             case DIAMOND:
+                System.out.println(PianoPlugin.tasks.entrySet().size());
+                for (HashMap.Entry<UUID, BukkitRunnable> entry : PianoPlugin.tasks.entrySet()) {
+                    System.out.println(entry.getKey() + " Завершилось ли: " + entry.getValue().isCancelled());
+                }
                 //addPointerItem(4);
                 break;
         }
@@ -141,7 +154,7 @@ public class PianoMenu extends Menu {
     public void setMenuItems() {
         ItemStack yes = new ItemStack(EMERALD, 1);
         ItemMeta yesMeta = yes.getItemMeta();
-        yesMeta.setDisplayName(ChatColor.GREEN + "Info");
+        yesMeta.setDisplayName(ChatColor.GREEN + "Start Recording");
         yes.setItemMeta(yesMeta);
 
         ItemStack exitItem = new ItemStack(BARRIER, 1);
@@ -150,12 +163,13 @@ public class PianoMenu extends Menu {
         exitItem.setItemMeta(noMeta);
 
         ItemStack addItem = getItem("Add", DIAMOND);
-        ItemStack noItem = getItem("Delete", TNT);
+        ItemStack noItem = getItem("Play Last Music", TNT);
 
         int count = 0;
         for (HashMap.Entry<String, Sound> entry : blockSounds.entrySet()) {
             if (count == 9) break;
-            ItemStack tempItem = getGlassStack(entry.getKey(), count % 2);
+            ItemStack tempItem = getGlassStack(entry.getKey(), count);
+            //ItemStack tempItem = getGlassStack(entry.getKey(), count%2);
             setItemColumn(tempItem, count, 4);
             count++;
         }
@@ -174,7 +188,11 @@ public class PianoMenu extends Menu {
      * @return стекло нужного цвета
      */
     public ItemStack getGlassStack(String name, int count) {
-        ItemStack itemStack = new ItemStack(STAINED_GLASS_PANE, 1, (short) count);
+        ItemStack itemStack;
+        if (count != 8)
+            itemStack = new ItemStack(STAINED_GLASS_PANE, 1, (short) count);
+        else
+            itemStack = new ItemStack(STAINED_GLASS_PANE, 1, (short) 13);
         ItemMeta meta = itemStack.getItemMeta();
         meta.setDisplayName(name);
         itemStack.setItemMeta(meta);
