@@ -16,7 +16,7 @@ public class PlayerMenuUtil {
     private Instant start;
     private Instant finish;
 
-    private ArrayList<Music> playlist = new ArrayList<>();
+    //private ArrayList<Music> playlist = new ArrayList<>();
 
     public PlayerMenuUtil(Player owner) {
         this.owner = owner;
@@ -47,6 +47,7 @@ public class PlayerMenuUtil {
         this.finish = finish;
     }
 
+    /**
     public ArrayList<Music> getPlaylist() {
         return playlist;
     }
@@ -57,7 +58,7 @@ public class PlayerMenuUtil {
 
     public void addToPlaylist(Music music) {
         playlist.add(music);
-    }
+    }*/
 
     public UUID getUuid() {
         return uuid;

@@ -2,6 +2,7 @@ package hse.minecraft.pianoplugin.menuSystem;
 
 import hse.minecraft.pianoplugin.Music.Music;
 import hse.minecraft.pianoplugin.Music.MusicConductor;
+import hse.minecraft.pianoplugin.Music.MusicPlayer;
 import hse.minecraft.pianoplugin.Music.MusicSample;
 import hse.minecraft.pianoplugin.PianoPlugin;
 import org.bukkit.ChatColor;
@@ -16,9 +17,7 @@ import org.bukkit.scheduler.BukkitRunnable;
 
 import java.time.Duration;
 import java.time.Instant;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.UUID;
+import java.util.*;
 
 import static org.bukkit.Material.*;
 import static org.bukkit.Sound.*;
@@ -32,7 +31,8 @@ public class PianoMenu extends Menu {
     Music music;
 
     //Мап содержащий название звука блока и сам Sound
-    public static final HashMap<String, Sound> blockSounds = new HashMap<>();
+    public static final SortedMap<String, Sound> blockSounds = new TreeMap<>();
+    List<String> blockList = new ArrayList<String>(PianoMenu.blockSounds.keySet());
 
     static {
         blockSounds.put("BASEDRUM", BLOCK_NOTE_BASEDRUM);
@@ -64,6 +64,10 @@ public class PianoMenu extends Menu {
 
     @Override
     public void handleMenu(InventoryClickEvent event) {
+        ArrayList<Music> list;
+        Music lastMusic;
+        BukkitRunnable br;
+
         Player player = playerMenuUtil.getOwner();
 
         if (event == null) return;
@@ -122,15 +126,15 @@ public class PianoMenu extends Menu {
                 break;
 
             case TNT:
-                ArrayList<Music> list = playerMenuUtil.getPlaylist();
+                list = PianoPlugin.playerPlaylists.get(playerMenuUtil.getOwner().getUniqueId()).getPlaylist();
                 if (list.isEmpty()) break;
-                Music lastMusic = list.get(list.size() - 1);
+                lastMusic = list.get(list.size() - 1);
 
-                BukkitRunnable br = PianoPlugin.tasks.remove(player.getUniqueId());
+                br = PianoPlugin.tasks.remove(player.getUniqueId());
                 if (br != null) br.cancel();
 
                 //TODO сделать отдельно для песенки и учитывать, что человек мог уже запустить поток, тогда надо пррервать
-                br = new MusicConductor(player, lastMusic);
+                br = new MusicPlayer(player, lastMusic);
                 br.runTaskTimer(PianoPlugin.getPlugin(), 0, lastMusic.getTimeLength() / 60 * 20);
                 PianoPlugin.tasks.put(playerMenuUtil.getUuid(), br);
 
@@ -138,10 +142,23 @@ public class PianoMenu extends Menu {
                 break;
 
             case DIAMOND:
-                System.out.println(PianoPlugin.tasks.entrySet().size());
-                for (HashMap.Entry<UUID, BukkitRunnable> entry : PianoPlugin.tasks.entrySet()) {
-                    System.out.println(entry.getKey() + " Завершилось ли: " + entry.getValue().isCancelled());
-                }
+                list = PianoPlugin.playerPlaylists.get(playerMenuUtil.getOwner().getUniqueId()).getPlaylist();
+                if (list.isEmpty()) break;
+                lastMusic = list.get(list.size() - 1);
+
+                br = PianoPlugin.tasks.remove(player.getUniqueId());
+                if (br != null) br.cancel();
+
+                br = new MusicConductor(player, lastMusic, this);
+                br.runTaskTimer(PianoPlugin.getPlugin(), 0, lastMusic.getTimeLength() / 60 * 20);
+                PianoPlugin.tasks.put(playerMenuUtil.getUuid(), br);
+
+
+                /**
+                 System.out.println(PianoPlugin.tasks.entrySet().size());
+                 for (HashMap.Entry<UUID, BukkitRunnable> entry : PianoPlugin.tasks.entrySet()) {
+                 System.out.println(entry.getKey() + " Завершилось ли: " + entry.getValue().isCancelled());
+                 }**/
                 //addPointerItem(4);
                 break;
         }
@@ -221,13 +238,13 @@ public class PianoMenu extends Menu {
         return itemStack;
     }
 
-    private void addPointerItem(int i) {
+    public void addPointerItem(int i) {
         ItemStack pointer = getItem("Pointer", GOLD_INGOT);
         inventory.setItem(i, pointer);
 
     }
 
-    private void deletePointerItem(int i) {
+    public void deletePointerItem(int i) {
         ItemStack pointer = getItem("Pointer", GOLD_INGOT);
         inventory.remove(pointer);
     }
@@ -256,7 +273,7 @@ public class PianoMenu extends Menu {
         for (int i = 0; i < music.getMusicVector().size(); i++) {
             System.out.println(music.getMusicVector().get(i).getTime() + "  " + music.getMusicVector().get(i).getSoundName());
         }
-        playerMenuUtil.addToPlaylist(music);
+        PianoPlugin.playerPlaylists.get(playerMenuUtil.getOwner().getUniqueId()).addToPlaylist(music);
     }
 
 }

@@ -14,14 +14,14 @@ public class MusicPointer {
         this.menu = menu;
     }
 
-    private void addPointerItem(int i) {
+    public void addPointerItem(int i) {
         position = i;
         ItemStack pointer = menu.getItem("Pointer", GOLD_INGOT);
         menu.getInventory().setItem(i, pointer);
 
     }
 
-    private void deletePointerItem() {
+    public void deletePointerItem() {
         ItemStack pointer = menu.getItem("Pointer", GOLD_INGOT);
         menu.getInventory().remove(pointer);
     }

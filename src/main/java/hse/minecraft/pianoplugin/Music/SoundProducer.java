@@ -1,11 +1,27 @@
 package hse.minecraft.pianoplugin.Music;
 
-import hse.minecraft.pianoplugin.menuSystem.PlayerMenuUtil;
+import org.bukkit.ChatColor;
 import org.bukkit.Effect;
 import org.bukkit.Sound;
 import org.bukkit.entity.Player;
 
+import java.util.ArrayList;
+import java.util.Random;
+
 public class SoundProducer {
+
+    static ArrayList<Sound> minecraftMusic = new ArrayList<Sound>();
+
+    static {
+        minecraftMusic.add(Sound.MUSIC_CREATIVE);
+        minecraftMusic.add(Sound.MUSIC_CREDITS);
+        minecraftMusic.add(Sound.MUSIC_DRAGON);
+        minecraftMusic.add(Sound.MUSIC_END);
+        minecraftMusic.add(Sound.MUSIC_GAME);
+        minecraftMusic.add(Sound.MUSIC_MENU);
+        minecraftMusic.add(Sound.MUSIC_NETHER);
+    }
+
     /**
      * Проигрывает звук по его имени
      *
@@ -19,6 +35,7 @@ public class SoundProducer {
         try {
             Sound sound = Sound.valueOf(soundName);
             makeSound(player, sound);
+            player.sendMessage(ChatColor.ITALIC + "Playing Minecraft sound:" + soundName);
         } catch (IllegalArgumentException exception) {
             return false;
         }
@@ -28,5 +45,14 @@ public class SoundProducer {
     static public void makeSound(Player player, Sound sound) {
         player.playSound(player.getLocation(), sound, 20.0F, 20.0F);
         player.getWorld().playEffect(player.getLocation().add(0.0D, 1.5D, 0.0D), Effect.RECORD_PLAY, 2);
+    }
+
+    static public void makeRandomMinecraftMusic(Player player) {
+        player.sendMessage(ChatColor.ITALIC + "Playing random Minecraft music:" + minecraftMusic.get((int) (Math.random() * 6)).toString());
+        makeSound(player, minecraftMusic.get((int) (Math.random() * minecraftMusic.size())));
+    }
+
+    static public void makeRandomSound(Player player) {
+        makeSound(player, Sound.values()[new Random().nextInt(Sound.values().length)]);
     }
 }
