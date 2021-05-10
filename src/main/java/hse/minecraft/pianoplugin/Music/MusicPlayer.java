@@ -14,10 +14,12 @@ import java.util.Queue;
 public class MusicPlayer extends BukkitRunnable {
     private final Player player;
     private final Music tempMusic;
+    private final boolean isRandomPlaying;
 
-    public MusicPlayer(Player player, Music tempMusic) {
+    public MusicPlayer(Player player, Music tempMusic, boolean isRandomPlaying) {
         this.player = player;
         this.tempMusic = tempMusic;
+        this.isRandomPlaying = isRandomPlaying;
     }
 
     @Override
@@ -45,7 +47,11 @@ public class MusicPlayer extends BukkitRunnable {
             if (musicSampleQueue.peek() != null) {
                 long tempTime = musicSampleQueue.peek().getTime();
                 if (tempTime <= timeElapsed + 3 && tempTime >= timeElapsed - 3) {
-                    SoundProducer.makeSound(player, PianoMenu.blockSounds.get(musicSampleQueue.remove().SoundName));
+                    MusicSample musicSample = musicSampleQueue.remove();
+                    if (!isRandomPlaying)
+                        SoundProducer.makeSound(player, PianoMenu.blockSounds.get(musicSample.SoundName), musicSample.getPitchLevel());
+                    else
+                        SoundProducer.makeSound(player, PianoMenu.blockSounds.get(musicSample.SoundName), (float) Math.random());
                 }
             }
         }

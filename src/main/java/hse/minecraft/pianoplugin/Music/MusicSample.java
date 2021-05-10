@@ -5,6 +5,7 @@ import java.io.Serializable;
 public class MusicSample implements Serializable {
     protected String SoundName;
     protected long time;
+    protected float pitchLevel = 1;
 
     public MusicSample(String soundName, long time) {
         SoundName = soundName;
@@ -25,5 +26,13 @@ public class MusicSample implements Serializable {
 
     public void setTime(int time) {
         this.time = time;
+    }
+
+    public float getPitchLevel() {
+        return pitchLevel;
+    }
+
+    public void setPitchLevel(float pitchLevel) {
+        this.pitchLevel = pitchLevel;
     }
 }

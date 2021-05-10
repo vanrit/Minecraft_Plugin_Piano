@@ -29,12 +29,12 @@ public class SoundProducer {
      * @param soundName имя звука
      * @return была ли ошибка при попытке воспроизведения
      */
-    static public boolean makeSound(Player player, String soundName) {
+    static public boolean makeSoundFromString(Player player, String soundName) {
         if (soundName == null || player == null)
             return false;
         try {
             Sound sound = Sound.valueOf(soundName);
-            makeSound(player, sound);
+            makeSound(player, sound, (float) Math.random());
             player.sendMessage(ChatColor.ITALIC + "Playing Minecraft sound:" + soundName);
         } catch (IllegalArgumentException exception) {
             return false;
@@ -42,17 +42,21 @@ public class SoundProducer {
         return true;
     }
 
-    static public void makeSound(Player player, Sound sound) {
-        player.playSound(player.getLocation(), sound, 20.0F, 20.0F);
+    //Todo сделать отдельно методы для рандомного питча и нет, и кнопки соответсвенно
+    static public void makeSound(Player player, Sound sound, float pitchLevel) {
+        if (pitchLevel > 1) pitchLevel = 1;
+        pitchLevel = Math.abs(pitchLevel);
+        //player.playSound(player.getLocation(), sound, 20.0F, 20.0F);
+        player.playSound(player.getLocation(), sound, 20.0F, 2F * pitchLevel);
         player.getWorld().playEffect(player.getLocation().add(0.0D, 1.5D, 0.0D), Effect.RECORD_PLAY, 2);
     }
 
     static public void makeRandomMinecraftMusic(Player player) {
         player.sendMessage(ChatColor.ITALIC + "Playing random Minecraft music:" + minecraftMusic.get((int) (Math.random() * 6)).toString());
-        makeSound(player, minecraftMusic.get((int) (Math.random() * minecraftMusic.size())));
+        makeSound(player, minecraftMusic.get((int) (Math.random() * minecraftMusic.size())), (float) Math.random());
     }
 
     static public void makeRandomSound(Player player) {
-        makeSound(player, Sound.values()[new Random().nextInt(Sound.values().length)]);
+        makeSound(player, Sound.values()[new Random().nextInt(Sound.values().length)], (float) Math.random());
     }
 }

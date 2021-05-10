@@ -21,13 +21,6 @@ public class MusicConductor extends BukkitRunnable {
 
     List<String> blockList = new ArrayList<String>(PianoMenu.blockSounds.keySet());
 
-    /*
-    static
-    {
-        for (HashMap.Entry<String, Sound> entry : PianoMenu.blockSounds.entrySet()) {
-
-        }
-    }*/
 
     public MusicConductor(Player player, Music tempMusic, PianoMenu menu) {
         this.player = player;
@@ -60,6 +53,8 @@ public class MusicConductor extends BukkitRunnable {
          System.out.println("~~~~~~~~");
          **/
 
+        //TODO проверить почему не удаляется указатель, а только если нажать другую кнопку, сделать доп вывод
+        //TODO проверить вылет, если очень частые клики
         while (!musicSampleQueue.isEmpty()) {
             finish = Instant.now();
             long timeElapsed = Duration.between(start, finish).toMillis();
@@ -97,6 +92,7 @@ public class MusicConductor extends BukkitRunnable {
             }
         }
         musicConductor.deletePointerItem();
+        player.updateInventory();
 
         BukkitRunnable br = PianoPlugin.tasks.remove(player.getUniqueId());
         if (br != null) br.cancel();

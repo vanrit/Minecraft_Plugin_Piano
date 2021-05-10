@@ -29,6 +29,7 @@ import static org.bukkit.Sound.*;
 public class PianoMenu extends Menu {
     boolean recording = false;
     Music music;
+    int pithLevel = 1;
 
     //Мап содержащий название звука блока и сам Sound
     public static final SortedMap<String, Sound> blockSounds = new TreeMap<>();
@@ -125,7 +126,7 @@ public class PianoMenu extends Menu {
                 //event.setCancelled(true);
                 break;
 
-            case TNT:
+            case PUMPKIN:
                 list = PianoPlugin.playerPlaylists.get(playerMenuUtil.getOwner().getUniqueId()).getPlaylist();
                 if (list.isEmpty()) break;
                 lastMusic = list.get(list.size() - 1);
@@ -134,7 +135,23 @@ public class PianoMenu extends Menu {
                 if (br != null) br.cancel();
 
                 //TODO сделать отдельно для песенки и учитывать, что человек мог уже запустить поток, тогда надо пррервать
-                br = new MusicPlayer(player, lastMusic);
+                br = new MusicPlayer(player, lastMusic, false);
+                br.runTaskTimer(PianoPlugin.getPlugin(), 0, lastMusic.getTimeLength() / 60 * 20);
+                PianoPlugin.tasks.put(playerMenuUtil.getUuid(), br);
+
+                //deletePointerItem(4);
+                break;
+
+            case JACK_O_LANTERN:
+                list = PianoPlugin.playerPlaylists.get(playerMenuUtil.getOwner().getUniqueId()).getPlaylist();
+                if (list.isEmpty()) break;
+                lastMusic = list.get(list.size() - 1);
+
+                br = PianoPlugin.tasks.remove(player.getUniqueId());
+                if (br != null) br.cancel();
+
+                //TODO сделать отдельно для песенки и учитывать, что человек мог уже запустить поток, тогда надо пррервать
+                br = new MusicPlayer(player, lastMusic, true);
                 br.runTaskTimer(PianoPlugin.getPlugin(), 0, lastMusic.getTimeLength() / 60 * 20);
                 PianoPlugin.tasks.put(playerMenuUtil.getUuid(), br);
 
@@ -169,18 +186,23 @@ public class PianoMenu extends Menu {
      */
     @Override
     public void setMenuItems() {
-        ItemStack yes = new ItemStack(EMERALD, 1);
-        ItemMeta yesMeta = yes.getItemMeta();
+        ItemStack startRecordingItem = new ItemStack(EMERALD, 1);
+        ItemMeta yesMeta = startRecordingItem.getItemMeta();
         yesMeta.setDisplayName(ChatColor.GREEN + "Start Recording");
-        yes.setItemMeta(yesMeta);
+        startRecordingItem.setItemMeta(yesMeta);
 
         ItemStack exitItem = new ItemStack(BARRIER, 1);
         ItemMeta noMeta = exitItem.getItemMeta();
-        noMeta.setDisplayName(ChatColor.RED + "Exit");
+        noMeta.setDisplayName(ChatColor.DARK_RED + "Exit");
         exitItem.setItemMeta(noMeta);
 
-        ItemStack addItem = getItem("Add", DIAMOND);
-        ItemStack noItem = getItem("Play Last Music", TNT);
+        ItemStack conductorItem = getItem(ChatColor.DARK_GREEN + "Start Conductor", DIAMOND);
+        ItemStack samePithItem = getItem(ChatColor.AQUA + "Last Music same pitch", PUMPKIN);
+        ItemStack randomPitchItem = getItem(ChatColor.BLUE + "Last Music random pitch", JACK_O_LANTERN);
+        ItemStack stopPlayingItem = getItem(ChatColor.RED + "Stop playing music", TNT);
+
+        ItemStack upPitch = getItem(ChatColor.BLUE + "UP PITCH", LAVA_BUCKET);
+        ItemStack downPitch = getItem(ChatColor.RED + "DOWN PITCH", WATER_BUCKET);
 
         int count = 0;
         for (HashMap.Entry<String, Sound> entry : blockSounds.entrySet()) {
@@ -191,10 +213,14 @@ public class PianoMenu extends Menu {
             count++;
         }
 
-        inventory.setItem(9 * 4 + 2, yes);
-        inventory.setItem(9 * 4 + 3, addItem);
-        inventory.setItem(9 * 4 + 4, noItem);
-        inventory.setItem(9 * 4 + 5, exitItem);
+        inventory.setItem(9 * 4, downPitch);
+        inventory.setItem(9 * 4 + 1, upPitch);
+        inventory.setItem(9 * 4 + 2, startRecordingItem);
+        inventory.setItem(9 * 4 + 3, conductorItem);
+        inventory.setItem(9 * 4 + 4, samePithItem);
+        inventory.setItem(9 * 4 + 5, randomPitchItem);
+        inventory.setItem(9 * 4 + 6, stopPlayingItem);
+        inventory.setItem(9 * 4 + 8, exitItem);
     }
 
     /**

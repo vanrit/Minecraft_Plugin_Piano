@@ -20,7 +20,7 @@ public class PlaySoundCommand implements CommandExecutor {
                         SoundProducer.makeRandomSound(player);
                     else if (args[0].equals("music"))
                         SoundProducer.makeRandomMinecraftMusic(player);
-                    else if (!SoundProducer.makeSound(player, args[0]))
+                    else if (!SoundProducer.makeSoundFromString(player, args[0]))
                         sender.sendMessage(ChatColor.RED + "Error in <sound> name\n ");
                 } else {
                     sender.sendMessage(ChatColor.RED + "Use /plays <sound> \nor /plays music\nor /plays sound");

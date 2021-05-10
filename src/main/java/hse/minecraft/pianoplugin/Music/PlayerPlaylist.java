@@ -1,6 +1,5 @@
-package hse.minecraft.pianoplugin.menuSystem;
+package hse.minecraft.pianoplugin.Music;
 
-import hse.minecraft.pianoplugin.Music.Music;
 import org.bukkit.entity.Player;
 
 import java.util.ArrayList;

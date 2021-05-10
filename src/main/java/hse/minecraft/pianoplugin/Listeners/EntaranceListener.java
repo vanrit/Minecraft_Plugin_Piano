@@ -1,7 +1,7 @@
 package hse.minecraft.pianoplugin.Listeners;
 
 import hse.minecraft.pianoplugin.PianoPlugin;
-import hse.minecraft.pianoplugin.menuSystem.PlayerPlaylist;
+import hse.minecraft.pianoplugin.Music.PlayerPlaylist;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
