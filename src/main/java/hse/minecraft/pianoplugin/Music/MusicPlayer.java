@@ -28,6 +28,7 @@ public class MusicPlayer extends BukkitRunnable {
     }
 
     void conductPointer(Music music) {
+        SoundProducer soundProducer=new SoundProducer();
         if (music == null) return;
 
         Instant start = Instant.now();
@@ -49,14 +50,15 @@ public class MusicPlayer extends BukkitRunnable {
                 if (tempTime <= timeElapsed + 3 && tempTime >= timeElapsed - 3) {
                     MusicSample musicSample = musicSampleQueue.remove();
                     if (!isRandomPlaying)
-                        SoundProducer.makeSound(player, PianoMenu.blockSounds.get(musicSample.SoundName), musicSample.getPitchLevel());
+                        soundProducer.makeSound(player, PianoMenu.blockSounds.get(musicSample.SoundName), musicSample.getPitchLevel());
                     else
-                        SoundProducer.makeSound(player, PianoMenu.blockSounds.get(musicSample.SoundName), (float) Math.random());
+                        soundProducer.makeSound(player, PianoMenu.blockSounds.get(musicSample.SoundName), (float) Math.random());
                 }
             }
         }
 
-        BukkitRunnable br = PianoPlugin.tasks.remove(player.getUniqueId());
+        //this.cancel();
+        BukkitRunnable br = PianoPlugin.tasksMusic.remove(player.getUniqueId());
         if (br != null) br.cancel();
     }
 }

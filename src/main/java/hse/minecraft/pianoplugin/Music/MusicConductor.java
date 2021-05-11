@@ -1,6 +1,5 @@
 package hse.minecraft.pianoplugin.Music;
 
-import hse.minecraft.pianoplugin.PianoPlugin;
 import hse.minecraft.pianoplugin.menuSystem.PianoMenu;
 import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
@@ -70,32 +69,35 @@ public class MusicConductor extends BukkitRunnable {
                     pos = tempPos;
 
                     musicConductor.addPointerItem(pos);
-                    //System.out.println("Start" + pos + "  " + sampleTime);
+                    System.out.println("Start " + Duration.between(start, Instant.now()).toMillis() + " MArk: " + sampleTime);
                     isPlaced = true;
                     player.updateInventory();
 
                     sampleLength = Instant.now();
+                    //
                     musicSampleQueue.remove();
 
                     if (musicSampleQueue.peek() != null)
                         minTime = Math.min(musicSampleQueue.peek().getTime(), 200);
                     else
                         minTime = 200;
+
+                    System.out.println(minTime);
                 }
 
                 if (isPlaced && sampleLength != null && Duration.between(sampleLength, Instant.now()).toMillis() >= minTime) {
                     //musicSampleQueue.remove();
                     musicConductor.deletePointerItem();
-                    //System.out.println("End" + pos + "  " + sampleTime + " Dur: " + Duration.between(sampleLength, Instant.now()).toMillis());
+                    System.out.println("End " + Duration.between(start, Instant.now()).toMillis() + " MArk:" + sampleTime + " Dur: " + Duration.between(sampleLength, Instant.now()).toMillis());
                     isPlaced = false;
                 }
             }
         }
-        musicConductor.deletePointerItem();
         player.updateInventory();
 
-        BukkitRunnable br = PianoPlugin.tasks.remove(player.getUniqueId());
-        if (br != null) br.cancel();
+        this.cancel();
+        //BukkitRunnable br = PianoPlugin.tasksConductor.remove(player.getUniqueId());
+        //if (br != null) br.cancel();
     }
 
     public int getPos() {

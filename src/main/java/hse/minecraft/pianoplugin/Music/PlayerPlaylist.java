@@ -1,16 +1,9 @@
 package hse.minecraft.pianoplugin.Music;
 
-import org.bukkit.entity.Player;
-
+import java.io.Serializable;
 import java.util.ArrayList;
 
-public class PlayerPlaylist {
-    Player player;
-
-    public PlayerPlaylist(Player player) {
-        this.player = player;
-    }
-
+public class PlayerPlaylist implements Serializable {
     private ArrayList<Music> playlist = new ArrayList<>();
 
     public ArrayList<Music> getPlaylist() {
@@ -25,12 +18,5 @@ public class PlayerPlaylist {
         playlist.add(music);
     }
 
-    public Player getPlayer() {
-        return player;
-    }
-
-    public void setPlayer(Player player) {
-        this.player = player;
-    }
 
 }

@@ -29,7 +29,7 @@ public class SoundProducer {
      * @param soundName имя звука
      * @return была ли ошибка при попытке воспроизведения
      */
-    static public boolean makeSoundFromString(Player player, String soundName) {
+    public boolean makeSoundFromString(Player player, String soundName) {
         if (soundName == null || player == null)
             return false;
         try {
@@ -43,7 +43,7 @@ public class SoundProducer {
     }
 
     //Todo сделать отдельно методы для рандомного питча и нет, и кнопки соответсвенно
-    static public void makeSound(Player player, Sound sound, float pitchLevel) {
+    public void makeSound(Player player, Sound sound, float pitchLevel) {
         if (pitchLevel > 1) pitchLevel = 1;
         pitchLevel = Math.abs(pitchLevel);
         //player.playSound(player.getLocation(), sound, 20.0F, 20.0F);
@@ -51,12 +51,12 @@ public class SoundProducer {
         player.getWorld().playEffect(player.getLocation().add(0.0D, 1.5D, 0.0D), Effect.RECORD_PLAY, 2);
     }
 
-    static public void makeRandomMinecraftMusic(Player player) {
+    public void makeRandomMinecraftMusic(Player player) {
         player.sendMessage(ChatColor.ITALIC + "Playing random Minecraft music:" + minecraftMusic.get((int) (Math.random() * 6)).toString());
         makeSound(player, minecraftMusic.get((int) (Math.random() * minecraftMusic.size())), (float) Math.random());
     }
 
-    static public void makeRandomSound(Player player) {
+    public void makeRandomSound(Player player) {
         makeSound(player, Sound.values()[new Random().nextInt(Sound.values().length)], (float) Math.random());
     }
 }

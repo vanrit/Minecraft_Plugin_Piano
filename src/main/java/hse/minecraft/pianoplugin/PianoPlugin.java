@@ -2,10 +2,10 @@ package hse.minecraft.pianoplugin;
 
 import hse.minecraft.pianoplugin.Listeners.EntaranceListener;
 import hse.minecraft.pianoplugin.Listeners.MenuListener;
+import hse.minecraft.pianoplugin.Music.PlayerPlaylist;
 import hse.minecraft.pianoplugin.commands.PianoCommand;
 import hse.minecraft.pianoplugin.commands.PlaySoundCommand;
 import hse.minecraft.pianoplugin.menuSystem.PlayerMenuUtil;
-import hse.minecraft.pianoplugin.Music.PlayerPlaylist;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
@@ -21,7 +21,8 @@ public final class PianoPlugin extends JavaPlugin {
     //Меню каждого игрока
     public static final HashMap<Player, PlayerMenuUtil> menuUtilHashMap = new HashMap<>();
     public static final HashMap<UUID, PlayerPlaylist> playerPlaylists = new HashMap<>();
-    public static final HashMap<UUID, BukkitRunnable> tasks = new HashMap<UUID, BukkitRunnable>();
+    public static final HashMap<UUID, BukkitRunnable> tasksMusic = new HashMap<UUID, BukkitRunnable>();
+    public static final HashMap<UUID, BukkitRunnable> tasksConductor = new HashMap<UUID, BukkitRunnable>();
 
     @Override
     public void onEnable() {
@@ -65,7 +66,7 @@ public final class PianoPlugin extends JavaPlugin {
             resMenuUtil = new PlayerMenuUtil(player);
 
             if (!playerPlaylists.containsKey(player.getUniqueId())) {
-                PlayerPlaylist playerPlaylist = new PlayerPlaylist(player);
+                PlayerPlaylist playerPlaylist = new PlayerPlaylist();
                 playerPlaylists.put(player.getUniqueId(), playerPlaylist);
             }
             menuUtilHashMap.put(player, resMenuUtil);
