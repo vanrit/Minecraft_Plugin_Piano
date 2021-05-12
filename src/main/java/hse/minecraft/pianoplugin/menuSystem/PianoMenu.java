@@ -270,17 +270,6 @@ public class PianoMenu extends Menu {
         return itemStack;
     }
 
-    public void addPointerItem(int i) {
-        ItemStack pointer = getItem("Pointer", GOLD_INGOT);
-        inventory.setItem(i, pointer);
-
-    }
-
-    public void deletePointerItem(int i) {
-        ItemStack pointer = getItem("Pointer", GOLD_INGOT);
-        inventory.remove(pointer);
-    }
-
     /**
      * Запись времени воспроизведения звука игроком
      *

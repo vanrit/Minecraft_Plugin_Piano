@@ -52,12 +52,12 @@ public class MusicConductor extends BukkitRunnable {
          System.out.println("~~~~~~~~");
          **/
 
+        long minTime = 300;
         //TODO проверить почему не удаляется указатель, а только если нажать другую кнопку, сделать доп вывод
         //TODO проверить вылет, если очень частые клики
-        while (!musicSampleQueue.isEmpty()) {
+        while (!musicSampleQueue.isEmpty() && Duration.between(start, Instant.now()).toMillis() < music.getTimeLength() + 100) {
             finish = Instant.now();
             long timeElapsed = Duration.between(start, finish).toMillis();
-            long minTime = 300;
 
             if (musicSampleQueue.peek() != null) {
                 MusicSample tempSample = musicSampleQueue.peek();
@@ -78,9 +78,9 @@ public class MusicConductor extends BukkitRunnable {
                     musicSampleQueue.remove();
 
                     if (musicSampleQueue.peek() != null)
-                        minTime = Math.min(musicSampleQueue.peek().getTime(), 200);
+                        minTime = musicSampleQueue.peek().getTime() - sampleTime;
                     else
-                        minTime = 200;
+                        minTime = 400;
 
                     System.out.println(minTime);
                 }
@@ -93,7 +93,17 @@ public class MusicConductor extends BukkitRunnable {
                 }
             }
         }
-        player.updateInventory();
+
+        //Последний висит не более  1000 мс
+        start = Instant.now();
+        while (Duration.between(start, Instant.now()).toMillis() < 1000) {
+            if (Duration.between(start, Instant.now()).toMillis() >= 900) {
+                musicConductor.deletePointerItem();
+                player.updateInventory();
+                System.out.println("End " + start);
+                break;
+            }
+        }
 
         this.cancel();
         //BukkitRunnable br = PianoPlugin.tasksConductor.remove(player.getUniqueId());
