@@ -5,6 +5,7 @@ import hse.minecraft.pianoplugin.commands.PlaySoundCommand;
 import hse.minecraft.pianoplugin.listeners.EntaranceListener;
 import hse.minecraft.pianoplugin.listeners.MenuListener;
 import hse.minecraft.pianoplugin.menuSystem.PlayerMenuUtil;
+import hse.minecraft.pianoplugin.music.MusicSerialization;
 import hse.minecraft.pianoplugin.music.PlayerPlaylist;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -13,6 +14,9 @@ import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.scheduler.BukkitRunnable;
 
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.UUID;
 
@@ -36,6 +40,9 @@ public final class PianoPlugin extends JavaPlugin {
 
     @Override
     public void onDisable() {
+        ArrayList<PlayerPlaylist> playlists = new ArrayList<PlayerPlaylist>(playerPlaylists.values());
+        Path temp = Paths.get("tempSave.txt");
+        MusicSerialization.saveMusic(playlists, "savePianoPlugin.txt");
         // Plugin shutdown logic
     }
 
@@ -67,7 +74,7 @@ public final class PianoPlugin extends JavaPlugin {
         resMenuUtil = new PlayerMenuUtil(player);
 
         if (!playerPlaylists.containsKey(player.getUniqueId())) {
-            PlayerPlaylist playerPlaylist = new PlayerPlaylist();
+            PlayerPlaylist playerPlaylist = new PlayerPlaylist(player.getUniqueId());
             playerPlaylists.put(player.getUniqueId(), playerPlaylist);
         }
         //menuUtilHashMap.put(player, resMenuUtil);
