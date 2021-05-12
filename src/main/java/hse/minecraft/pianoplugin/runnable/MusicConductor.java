@@ -1,7 +1,10 @@
-package hse.minecraft.pianoplugin.Music;
+package hse.minecraft.pianoplugin.runnable;
 
 import hse.minecraft.pianoplugin.PianoPlugin;
 import hse.minecraft.pianoplugin.menuSystem.PianoMenu;
+import hse.minecraft.pianoplugin.music.Music;
+import hse.minecraft.pianoplugin.music.MusicPointer;
+import hse.minecraft.pianoplugin.music.MusicSample;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
@@ -67,7 +70,7 @@ public class MusicConductor extends BukkitRunnable {
                 long dif = sampleTime - timeElapsed;
                 if (!isPlaced && dif <= 220 && dif >= 200) {
                     indexSound++;
-                    int tempPos = blockList.indexOf(tempSample.SoundName);
+                    int tempPos = blockList.indexOf(tempSample.getSoundName());
                     pos = tempPos;
 
                     musicConductor.addPointerItem(pos);

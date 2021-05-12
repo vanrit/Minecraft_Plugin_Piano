@@ -1,4 +1,4 @@
-package hse.minecraft.pianoplugin.Music;
+package hse.minecraft.pianoplugin.music;
 
 import org.bukkit.ChatColor;
 import org.bukkit.Effect;

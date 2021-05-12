@@ -1,6 +1,6 @@
 package hse.minecraft.pianoplugin.commands;
 
-import hse.minecraft.pianoplugin.Music.SoundProducer;
+import hse.minecraft.pianoplugin.music.SoundProducer;
 import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;

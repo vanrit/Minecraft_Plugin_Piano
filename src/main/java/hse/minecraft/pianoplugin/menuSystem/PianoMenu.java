@@ -1,7 +1,9 @@
 package hse.minecraft.pianoplugin.menuSystem;
 
-import hse.minecraft.pianoplugin.Music.*;
+import hse.minecraft.pianoplugin.music.*;
 import hse.minecraft.pianoplugin.PianoPlugin;
+import hse.minecraft.pianoplugin.runnable.MusicConductor;
+import hse.minecraft.pianoplugin.runnable.MusicPlayer;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.Sound;

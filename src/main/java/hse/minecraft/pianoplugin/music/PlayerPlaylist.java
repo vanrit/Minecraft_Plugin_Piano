@@ -1,4 +1,4 @@
-package hse.minecraft.pianoplugin.Music;
+package hse.minecraft.pianoplugin.music;
 
 import java.io.Serializable;
 import java.util.ArrayList;

@@ -1,4 +1,4 @@
-package hse.minecraft.pianoplugin.Listeners;
+package hse.minecraft.pianoplugin.listeners;
 
 import hse.minecraft.pianoplugin.menuSystem.Menu;
 import org.bukkit.entity.Player;

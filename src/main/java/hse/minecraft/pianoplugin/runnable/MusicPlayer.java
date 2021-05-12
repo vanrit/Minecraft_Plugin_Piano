@@ -1,7 +1,10 @@
-package hse.minecraft.pianoplugin.Music;
+package hse.minecraft.pianoplugin.runnable;
 
 import hse.minecraft.pianoplugin.PianoPlugin;
 import hse.minecraft.pianoplugin.menuSystem.PianoMenu;
+import hse.minecraft.pianoplugin.music.Music;
+import hse.minecraft.pianoplugin.music.MusicSample;
+import hse.minecraft.pianoplugin.music.SoundProducer;
 import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
 
@@ -50,9 +53,9 @@ public class MusicPlayer extends BukkitRunnable {
                 if (tempTime <= timeElapsed + 3 && tempTime >= timeElapsed - 3) {
                     MusicSample musicSample = musicSampleQueue.remove();
                     if (!isRandomPlaying)
-                        soundProducer.makeSound(player, PianoMenu.blockSounds.get(musicSample.SoundName), musicSample.getPitchLevel());
+                        soundProducer.makeSound(player, PianoMenu.blockSounds.get(musicSample.getSoundName()), musicSample.getPitchLevel());
                     else
-                        soundProducer.makeSound(player, PianoMenu.blockSounds.get(musicSample.SoundName), (float) Math.random());
+                        soundProducer.makeSound(player, PianoMenu.blockSounds.get(musicSample.getSoundName()), (float) Math.random());
                 }
             }
         }

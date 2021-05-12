@@ -1,6 +1,5 @@
-package hse.minecraft.pianoplugin.Music;
+package hse.minecraft.pianoplugin.music;
 
-import hse.minecraft.pianoplugin.menuSystem.Menu;
 import hse.minecraft.pianoplugin.menuSystem.PianoMenu;
 import org.bukkit.inventory.ItemStack;
 
@@ -10,7 +9,7 @@ public class MusicPointer {
     PianoMenu menu;
     int position;
 
-    MusicPointer(PianoMenu menu) {
+    public MusicPointer(PianoMenu menu) {
         this.menu = menu;
     }
 
