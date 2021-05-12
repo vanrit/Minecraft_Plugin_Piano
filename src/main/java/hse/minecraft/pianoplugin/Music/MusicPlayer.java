@@ -1,5 +1,6 @@
 package hse.minecraft.pianoplugin.Music;
 
+import hse.minecraft.pianoplugin.PianoPlugin;
 import hse.minecraft.pianoplugin.menuSystem.PianoMenu;
 import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
@@ -56,7 +57,9 @@ public class MusicPlayer extends BukkitRunnable {
             }
         }
 
+        BukkitRunnable br = PianoPlugin.tasksMusic.remove(player.getUniqueId());
         this.cancel();
+
         //BukkitRunnable br = PianoPlugin.tasksMusic.remove(player.getUniqueId());
         //if (br != null) br.cancel();
     }

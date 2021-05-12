@@ -26,6 +26,7 @@ public class PianoMenu extends Menu {
     boolean recording = false;
     Music music;
     float pitchLevel = 1F;
+    int hitCounter = 0;
     SoundProducer soundProducer = new SoundProducer();
 
     //Мап содержащий название звука блока и сам Sound
@@ -93,11 +94,13 @@ public class PianoMenu extends Menu {
                     //System.out.println("MS: " + timeElapsed);
 
                     if (music.getMusicVector().size() > 0) {
+                        player.sendMessage(ChatColor.GREEN + "Music recorded");
                         //Добавление музыки
                         music.setName(playerMenuUtil.getStart().toString());
                         music.setTimeLength(timeElapsed);
                         addMusic(music);
-                    }
+                    } else
+                        player.sendMessage(ChatColor.RED + "No sounds recorded");
 
                     //System.out.println(playerMenuUtil.getFinish().toString());
                     recording = false;
@@ -118,8 +121,15 @@ public class PianoMenu extends Menu {
                     if (event.getCurrentItem().getItemMeta().getDisplayName().equals(entry.getKey())) {
                         setTime(entry.getKey());
                         soundProducer.makeSound(player, entry.getValue(), pitchLevel);
-                        //player.playSound(player.getLocation(), entry.getValue(), 20.0F, pitchLevel);
-                        //player.getWorld().playEffect(player.getLocation().add(0.0D, 1.5D, 0.0D), Effect.RECORD_PLAY, 2);
+
+                        //Обработка кликов, если включен поток с дирижером
+                        MusicConductor conductor = (MusicConductor) PianoPlugin.tasksConductor.get(player.getUniqueId());
+                        if (conductor != null && blockList.indexOf(entry.getKey()) == conductor.getPos()) {
+                            //hitCounter++;
+                            //System.out.println("Hit counter" + hitCounter);
+                            conductor.checkClick();
+                        }
+
                     }
                     count++;
 
