@@ -1,6 +1,7 @@
 package hse.minecraft.pianoplugin.runnable;
 
 import hse.minecraft.pianoplugin.PianoPlugin;
+import hse.minecraft.pianoplugin.helpers.Sender;
 import hse.minecraft.pianoplugin.menuSystem.PianoMenu;
 import hse.minecraft.pianoplugin.music.Music;
 import hse.minecraft.pianoplugin.music.MusicPointer;
@@ -87,7 +88,7 @@ public class MusicConductor extends BukkitRunnable {
                     else
                         minTime = 1000;
 
-                    System.out.println(minTime);
+                    Sender.sendConsole("MinRange time: " + minTime);
                 }
 
                 if (isPlaced && sampleLength != null && Duration.between(sampleLength, Instant.now()).toMillis() >= minTime) {
@@ -105,7 +106,7 @@ public class MusicConductor extends BukkitRunnable {
             if (Duration.between(start, Instant.now()).toMillis() >= 900) {
                 musicConductor.deletePointerItem();
                 player.updateInventory();
-                System.out.println("End " + start);
+                Sender.sendConsole("End " + start);
                 break;
             }
         }
@@ -115,7 +116,9 @@ public class MusicConductor extends BukkitRunnable {
             if (item == 1)
                 resScore++;
         }
-        System.out.println("Result: " + resScore);
+
+        //Вывод результата
+        Sender.sendConsole("Result: " + resScore);
         checkResult(resScore);
 
 

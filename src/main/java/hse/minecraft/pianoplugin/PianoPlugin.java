@@ -5,7 +5,7 @@ import hse.minecraft.pianoplugin.commands.PlaySoundCommand;
 import hse.minecraft.pianoplugin.listeners.EntaranceListener;
 import hse.minecraft.pianoplugin.listeners.MenuListener;
 import hse.minecraft.pianoplugin.menuSystem.PlayerMenuUtil;
-import hse.minecraft.pianoplugin.music.MusicSerialization;
+import hse.minecraft.pianoplugin.music.Serialization;
 import hse.minecraft.pianoplugin.music.PlayerPlaylist;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -30,6 +30,7 @@ public final class PianoPlugin extends JavaPlugin {
 
     @Override
     public void onEnable() {
+        loadPlaylists();
         // Plugin startup logic
         Bukkit.getConsoleSender().sendMessage(ChatColor.GOLD + "[HSE]~~~~~~~~ Piano plugin Started ~~~~~~~~");
         Bukkit.getConsoleSender().sendMessage(ChatColor.GOLD + "[HSE] Created by John Sim");
@@ -42,8 +43,15 @@ public final class PianoPlugin extends JavaPlugin {
     public void onDisable() {
         ArrayList<PlayerPlaylist> playlists = new ArrayList<PlayerPlaylist>(playerPlaylists.values());
         Path temp = Paths.get("tempSave.txt");
-        MusicSerialization.saveMusic(playlists, "savePianoPlugin.txt");
+        Serialization.save(playlists, "savePianoPlugin.txt");
         // Plugin shutdown logic
+    }
+
+    private void loadPlaylists() {
+        ArrayList<PlayerPlaylist> playlists = Serialization.load("savePianoPlugin.txt");
+        for (PlayerPlaylist item : playlists) {
+            playerPlaylists.put(item.getUniqueId(), item);
+        }
     }
 
     private void registerListeners() {
