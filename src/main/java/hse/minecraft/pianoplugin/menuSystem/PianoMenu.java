@@ -3,6 +3,7 @@ package hse.minecraft.pianoplugin.menuSystem;
 import hse.minecraft.pianoplugin.PianoPlugin;
 import hse.minecraft.pianoplugin.helpers.Sender;
 import hse.minecraft.pianoplugin.music.Music;
+import hse.minecraft.pianoplugin.music.MusicForConductor;
 import hse.minecraft.pianoplugin.music.MusicSample;
 import hse.minecraft.pianoplugin.music.SoundProducer;
 import hse.minecraft.pianoplugin.runnable.MusicConductor;
@@ -35,7 +36,7 @@ public class PianoMenu extends Menu {
 
     //Мап содержащий название звука блока и сам Sound
     public static final SortedMap<String, Sound> blockSounds = new TreeMap<>();
-    List<String> blockList = new ArrayList<String>(PianoMenu.blockSounds.keySet());
+    public static List<String> blockList = new ArrayList<String>(PianoMenu.blockSounds.keySet());
 
     static {
         blockSounds.put("BASEDRUM", BLOCK_NOTE_BASEDRUM);
@@ -49,6 +50,9 @@ public class PianoMenu extends Menu {
         blockSounds.put("PLING", BLOCK_NOTE_PLING);
         blockSounds.put("SNARE", BLOCK_NOTE_SNARE);
         //blockSounds.put("XYLOPHONE", BLOCK_NOTE_XYLOPHONE);
+
+        blockList = new ArrayList<String>(PianoMenu.blockSounds.keySet());
+
     }
 
     public PianoMenu(PlayerMenuUtil playerMenuUtil) {
@@ -87,6 +91,7 @@ public class PianoMenu extends Menu {
         switch (event.getCurrentItem().getType()) {
             case EMERALD:
                 if (!recording) {
+                    player.sendMessage(ChatColor.GREEN + "Recording is started");
                     music = new Music();
                     playerMenuUtil.setStart(Instant.now());
                     //Sender.sendConsole(playerMenuUtil.getStart().toString());
@@ -150,7 +155,7 @@ public class PianoMenu extends Menu {
 
                 br = new MusicPlayer(player, lastMusic, false);
 
-                startTask(br, player, lastMusic, PianoPlugin.tasksMusic);
+                startTask(br, player, PianoPlugin.tasksMusic);
 
                 break;
 
@@ -162,23 +167,20 @@ public class PianoMenu extends Menu {
                 removeTask(player, PianoPlugin.tasksRandomMusic);
 
                 br = new MusicPlayer(player, lastMusic, true);
-                startTask(br, player, lastMusic, PianoPlugin.tasksRandomMusic);
+                startTask(br, player, PianoPlugin.tasksRandomMusic);
 
                 break;
 
             case DIAMOND:
-                list = PianoPlugin.playerPlaylists.get(playerMenuUtil.getOwner().getUniqueId()).getPlaylist();
-                if (list.isEmpty()) break;
-                lastMusic = list.get(list.size() - 1);
 
                 removeTask(player, PianoPlugin.tasksConductor);
 
-                br = new MusicConductor(player, lastMusic, this);
-                startTask(br, player, lastMusic, PianoPlugin.tasksConductor);
+                br = new MusicConductor(player, MusicForConductor.getMusic(), this);
+                startTask(br, player, PianoPlugin.tasksConductor);
 
                 break;
 
-            case TNT:
+            case GREEN_RECORD:
                 event.getWhoClicked().closeInventory();
                 PlaylistMenu menu = new PlaylistMenu(PianoPlugin.getPlayerMenu(player));
                 menu.open();
@@ -212,7 +214,7 @@ public class PianoMenu extends Menu {
         ItemStack conductorItem = getItem(ChatColor.DARK_GREEN + "Start Conductor", DIAMOND);
         ItemStack samePithItem = getItem(ChatColor.AQUA + "Last Music same pitch", PUMPKIN);
         ItemStack randomPitchItem = getItem(ChatColor.BLUE + "Last Music random pitch", JACK_O_LANTERN);
-        ItemStack stopPlayingItem = getItem(ChatColor.RED + "Stop playing music", TNT);
+        ItemStack stopPlayingItem = getItem(ChatColor.RED + "Open my playlist", GREEN_RECORD);
 
         ItemStack upPitch = getItem(ChatColor.YELLOW + "UP PITCH", LAVA_BUCKET);
         ItemStack downPitch = getItem(ChatColor.BLUE + "DOWN PITCH", WATER_BUCKET);

@@ -77,16 +77,22 @@ public class PlaylistMenu extends Menu {
 
                 br = new MusicPlayer(player, tempMusic, randomPitchFlag);
 
-                startTask(br, player, tempMusic, PianoPlugin.tasksMusic);
+                startTask(br, player, PianoPlugin.tasksMusic);
 
                 break;
 
             case JUKEBOX:
                 randomPitchFlag = !randomPitchFlag;
                 if (randomPitchFlag)
-                    player.sendMessage("Now pitch is random");
+                    player.sendMessage(ChatColor.WHITE + "Now pitch is random");
                 else
-                    player.sendMessage("Now pitch is normal");
+                    player.sendMessage(ChatColor.DARK_GRAY + "Now pitch is normal");
+                break;
+
+            case COMPASS:
+                event.getWhoClicked().closeInventory();
+                PianoMenu menu = new PianoMenu(PianoPlugin.getPlayerMenu(player));
+                menu.open();
                 break;
 
         }
@@ -107,6 +113,7 @@ public class PlaylistMenu extends Menu {
 
 
         ItemStack randomPitchItem = getItem(ChatColor.BLUE + "Change Music Pitch type", JUKEBOX);
+        ItemStack pianoItem = getItem(ChatColor.YELLOW + "Open Piano menu", COMPASS);
 
         int count = 0;
         for (Music item : playlist) {
@@ -116,6 +123,7 @@ public class PlaylistMenu extends Menu {
         }
 
         inventory.setItem(9 * 4 + 4, randomPitchItem);
+        inventory.setItem(9 * 4 + 7, pianoItem);
         inventory.setItem(9 * 4 + 8, exitItem);
     }
 }

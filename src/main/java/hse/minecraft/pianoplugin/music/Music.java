@@ -7,7 +7,6 @@ public class Music implements Serializable {
     protected String name;
     protected long timeLength;
     protected ArrayList<MusicSample> musicVector = new ArrayList<>();
-    ;
 
     public String getName() {
         return name;

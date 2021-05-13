@@ -52,7 +52,7 @@ public abstract class Menu implements InventoryHolder {
         return inventory;
     }
 
-    public void startTask(BukkitRunnable br, Player player, Music lastMusic, HashMap<UUID, BukkitRunnable> tasks) {
+    public void startTask(BukkitRunnable br, Player player, HashMap<UUID, BukkitRunnable> tasks) {
         tasks.put(player.getUniqueId(), br);
         //br.runTaskTimerAsynchronously(PianoPlugin.getPlugin(), 0, lastMusic.getTimeLength() / 60 * 20);
         br.runTaskAsynchronously(PianoPlugin.getPlugin());

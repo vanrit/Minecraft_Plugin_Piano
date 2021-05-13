@@ -3,21 +3,27 @@ package hse.minecraft.pianoplugin.music;
 import java.io.Serializable;
 
 public class MusicSample implements Serializable {
-    protected String SoundName;
+    protected String soundName;
     protected long time;
     protected float pitchLevel = 1.0F;
 
     public MusicSample(String soundName, long time) {
-        SoundName = soundName;
+        this.soundName = soundName;
         this.time = time;
     }
 
+    public MusicSample(String soundName, long time, float pitchLevel) {
+        this.soundName = soundName;
+        this.time = time;
+        this.pitchLevel = pitchLevel;
+    }
+
     public String getSoundName() {
-        return SoundName;
+        return soundName;
     }
 
     public void setSoundName(String soundName) {
-        SoundName = soundName;
+        this.soundName = soundName;
     }
 
     public long getTime() {
