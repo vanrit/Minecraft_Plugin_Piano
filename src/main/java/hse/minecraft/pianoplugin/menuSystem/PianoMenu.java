@@ -1,11 +1,13 @@
 package hse.minecraft.pianoplugin.menuSystem;
 
-import hse.minecraft.pianoplugin.music.*;
 import hse.minecraft.pianoplugin.PianoPlugin;
+import hse.minecraft.pianoplugin.helpers.Sender;
+import hse.minecraft.pianoplugin.music.Music;
+import hse.minecraft.pianoplugin.music.MusicSample;
+import hse.minecraft.pianoplugin.music.SoundProducer;
 import hse.minecraft.pianoplugin.runnable.MusicConductor;
 import hse.minecraft.pianoplugin.runnable.MusicPlayer;
 import org.bukkit.ChatColor;
-import org.bukkit.Material;
 import org.bukkit.Sound;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryClickEvent;
@@ -87,13 +89,13 @@ public class PianoMenu extends Menu {
                 if (!recording) {
                     music = new Music();
                     playerMenuUtil.setStart(Instant.now());
-                    //System.out.println(playerMenuUtil.getStart().toString());
+                    //Sender.sendConsole(playerMenuUtil.getStart().toString());
                     recording = true;
                 } else {
                     playerMenuUtil.setFinish(Instant.now());
                     long timeElapsed = 0;
                     timeElapsed = Duration.between(playerMenuUtil.getStart(), playerMenuUtil.getFinish()).toMillis();
-                    //System.out.println("MS: " + timeElapsed);
+                    //Sender.sendConsole("MS: " + timeElapsed);
 
                     if (music.getMusicVector().size() > 0) {
                         player.sendMessage(ChatColor.GREEN + "Music recorded");
@@ -104,7 +106,7 @@ public class PianoMenu extends Menu {
                     } else
                         player.sendMessage(ChatColor.RED + "No sounds recorded");
 
-                    //System.out.println(playerMenuUtil.getFinish().toString());
+                    //Sender.sendConsole(playerMenuUtil.getFinish().toString());
                     recording = false;
                 }
                 break;
@@ -128,7 +130,7 @@ public class PianoMenu extends Menu {
                         MusicConductor conductor = (MusicConductor) PianoPlugin.tasksConductor.get(player.getUniqueId());
                         if (conductor != null && blockList.indexOf(entry.getKey()) == conductor.getPos()) {
                             //hitCounter++;
-                            //System.out.println("Hit counter" + hitCounter);
+                            //Sender.sendConsole("Hit counter" + hitCounter);
                             conductor.checkClick();
                         }
 
@@ -146,7 +148,6 @@ public class PianoMenu extends Menu {
 
                 removeTask(player, PianoPlugin.tasksMusic);
 
-                //TODO сделать отдельно для песенки и учитывать, что человек мог уже запустить поток, тогда надо пррервать
                 br = new MusicPlayer(player, lastMusic, false);
 
                 startTask(br, player, lastMusic, PianoPlugin.tasksMusic);
@@ -158,10 +159,10 @@ public class PianoMenu extends Menu {
                 if (list.isEmpty()) break;
                 lastMusic = list.get(list.size() - 1);
 
-                removeTask(player, PianoPlugin.tasksMusic);
+                removeTask(player, PianoPlugin.tasksRandomMusic);
 
                 br = new MusicPlayer(player, lastMusic, true);
-                startTask(br, player, lastMusic, PianoPlugin.tasksMusic);
+                startTask(br, player, lastMusic, PianoPlugin.tasksRandomMusic);
 
                 break;
 
@@ -170,7 +171,6 @@ public class PianoMenu extends Menu {
                 if (list.isEmpty()) break;
                 lastMusic = list.get(list.size() - 1);
 
-                //TODO не завершается таск по айди
                 removeTask(player, PianoPlugin.tasksConductor);
 
                 br = new MusicConductor(player, lastMusic, this);
@@ -179,14 +179,9 @@ public class PianoMenu extends Menu {
                 break;
 
             case TNT:
-                System.out.println(PianoPlugin.tasksMusic.entrySet().size());
-                System.out.println(PianoPlugin.tasksConductor.entrySet().size());
-                /*
-                for (HashMap.Entry<UUID, BukkitRunnable> entry : PianoPlugin.tasks.entrySet()) {
-                    System.out.println(entry.getKey() + " Завершилось ли: " + entry.getValue().isCancelled());
-                }*/
-                removeTask(player, PianoPlugin.tasksMusic);
-                removeTask(player, PianoPlugin.tasksConductor);
+                event.getWhoClicked().closeInventory();
+                PlaylistMenu menu = new PlaylistMenu(PianoPlugin.getPlayerMenu(player));
+                menu.open();
                 break;
 
             case LAVA_BUCKET:
@@ -260,28 +255,6 @@ public class PianoMenu extends Menu {
         return itemStack;
     }
 
-
-    /**
-     * Устанавливает переданный item в колонку
-     *
-     * @param item вещь
-     * @param idx  индекс колонки
-     * @param n    длина колонки вниз
-     */
-    private void setItemColumn(ItemStack item, int idx, int n) {
-        for (int i = 1; i < n; i++) {
-            inventory.setItem(idx + i * 9, item);
-        }
-    }
-
-    public ItemStack getItem(String name, Material mat) {
-        ItemStack itemStack = new ItemStack(mat, 1);
-        ItemMeta meta = itemStack.getItemMeta();
-        meta.setDisplayName(name);
-        itemStack.setItemMeta(meta);
-        return itemStack;
-    }
-
     /**
      * Запись времени воспроизведения звука игроком
      *
@@ -291,7 +264,7 @@ public class PianoMenu extends Menu {
         if (recording) {
             long timeElapsed = 0;
             timeElapsed = Duration.between(playerMenuUtil.getStart(), Instant.now()).toMillis();
-            System.out.println(name + ":" + timeElapsed);
+            Sender.sendConsole(name + ":" + timeElapsed);
             MusicSample musicSample = new MusicSample(name, timeElapsed);
             musicSample.setPitchLevel(pitchLevel);
             music.getMusicVector().add(musicSample);
@@ -304,27 +277,11 @@ public class PianoMenu extends Menu {
      * @param music музыка
      */
     private void addMusic(Music music) {
-        System.out.println("ADDED to playlist " + music.getName() + "; Time:" + music.getTimeLength());
+        Sender.sendConsole("ADDED to playlist " + music.getName() + "; Time:" + music.getTimeLength());
         for (int i = 0; i < music.getMusicVector().size(); i++) {
-            System.out.println(music.getMusicVector().get(i).getTime() + "  " + music.getMusicVector().get(i).getSoundName());
+            Sender.sendConsole(music.getMusicVector().get(i).getTime() + "  " + music.getMusicVector().get(i).getSoundName());
         }
         PianoPlugin.playerPlaylists.get(playerMenuUtil.getOwner().getUniqueId()).addToPlaylist(music);
-    }
-
-    public void startTask(BukkitRunnable br, Player player, Music lastMusic, HashMap<UUID, BukkitRunnable> tasks) {
-        tasks.put(player.getUniqueId(), br);
-        br.runTaskTimerAsynchronously(PianoPlugin.getPlugin(), 0, lastMusic.getTimeLength() / 60 * 20);
-        //PianoPlugin.tasksConductor.put(player.getUniqueId(), br);
-    }
-
-    public void removeTask(Player player, HashMap<UUID, BukkitRunnable> tasks) {
-
-        BukkitRunnable br = tasks.remove(player.getUniqueId());
-        while (br != null) {
-            System.out.println("Stop" + tasks.size() + " " + br.getTaskId());
-            br.cancel();
-            br = tasks.remove(player.getUniqueId());
-        }
     }
 
     private void upPitch(Player player) {
@@ -337,5 +294,28 @@ public class PianoMenu extends Menu {
         if (pitchLevel > 0.1F)
             pitchLevel -= 0.1F;
         player.sendMessage(ChatColor.GREEN + "Pitch level " + pitchLevel);
+    }
+
+    private void allTasksRemove(Player player) {
+        Sender.sendConsole("TASK MUSIC SIZE:" + PianoPlugin.tasksMusic.entrySet().size());
+        Sender.sendConsole("TASK MUSIC RANDOM SIZE:" + PianoPlugin.tasksMusic.entrySet().size());
+        Sender.sendConsole("TASK CONDUCTOR SIZE:" + PianoPlugin.tasksConductor.entrySet().size());
+
+
+        removeTask(player, PianoPlugin.tasksMusic);
+        removeTask(player, PianoPlugin.tasksRandomMusic);
+        removeTask(player, PianoPlugin.tasksConductor);
+
+        for (HashMap.Entry<UUID, BukkitRunnable> entry : PianoPlugin.tasksMusic.entrySet()) {
+            Sender.sendConsole(entry.getKey() + " Завершилось ли: " + entry.getValue().isCancelled());
+        }
+
+        for (HashMap.Entry<UUID, BukkitRunnable> entry : PianoPlugin.tasksRandomMusic.entrySet()) {
+            Sender.sendConsole(entry.getKey() + " Завершилось ли: " + entry.getValue().isCancelled());
+        }
+
+        for (HashMap.Entry<UUID, BukkitRunnable> entry : PianoPlugin.tasksConductor.entrySet()) {
+            Sender.sendConsole(entry.getKey() + " Завершилось ли: " + entry.getValue().isCancelled());
+        }
     }
 }

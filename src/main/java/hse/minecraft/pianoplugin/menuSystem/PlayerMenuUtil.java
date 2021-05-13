@@ -45,19 +45,6 @@ public class PlayerMenuUtil {
         this.finish = finish;
     }
 
-    /**
-    public ArrayList<Music> getPlaylist() {
-        return playlist;
-    }
-
-    public void setPlaylist(ArrayList<Music> playlist) {
-        this.playlist = playlist;
-    }
-
-    public void addToPlaylist(Music music) {
-        playlist.add(music);
-    }*/
-
     public UUID getUuid() {
         return uuid;
     }

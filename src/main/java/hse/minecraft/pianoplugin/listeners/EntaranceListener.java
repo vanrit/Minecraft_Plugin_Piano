@@ -1,15 +1,11 @@
 package hse.minecraft.pianoplugin.listeners;
 
 import hse.minecraft.pianoplugin.PianoPlugin;
-import hse.minecraft.pianoplugin.music.PlayerPlaylist;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerJoinEvent;
-
-import java.util.Map;
-import java.util.UUID;
 
 /**
  * Обработка входа на сервер
@@ -27,10 +23,12 @@ public class EntaranceListener implements Listener {
             p.sendMessage(entry.getKey().getName());
         }*/
 
+        if (PianoPlugin.playerPlaylists.get(p.getUniqueId()) != null)
+            p.sendMessage("Your playlist was saved before");
 
-        p.sendMessage("Size " + PianoPlugin.playerPlaylists.entrySet().size());
+        /*
         for (Map.Entry<UUID, PlayerPlaylist> entry : PianoPlugin.playerPlaylists.entrySet()) {
             p.sendMessage(entry.getKey().toString());
-        }
+        }*/
     }
 }

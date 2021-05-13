@@ -22,10 +22,17 @@ public class PlayerPlaylist implements Serializable {
     }
 
     public void addToPlaylist(Music music) {
-        playlist.add(music);
+        if (playlist.size() < 36)
+            playlist.add(music);
+        else resizePlaylist(music);
     }
 
     public UUID getUniqueId() {
         return uuid;
+    }
+
+    private void resizePlaylist(Music music) {
+        playlist.remove(0);
+        playlist.add(music);
     }
 }

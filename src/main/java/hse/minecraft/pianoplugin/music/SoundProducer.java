@@ -42,7 +42,6 @@ public class SoundProducer {
         return true;
     }
 
-    //Todo сделать отдельно методы для рандомного питча и нет, и кнопки соответсвенно
     public void makeSound(Player player, Sound sound, float pitchLevel) {
         if (pitchLevel > 1) pitchLevel = 1;
         pitchLevel = Math.abs(pitchLevel);

@@ -48,18 +48,18 @@ public class MusicConductor extends BukkitRunnable {
         Instant sampleLength = null;
 
         /**
-         System.out.println("~~~~~~~~");
+         Sender.sendConsole("~~~~~~~~");
          for (String item : blockList) {
-         System.out.println(item);
+         Sender.sendConsole(item);
          }
-         System.out.println("~~~~~~~~");
+         Sender.sendConsole("~~~~~~~~");
          **/
 
         musicScore = new ArrayList<Integer>(Collections.nCopies(vectorSamples.size(), 0));
 
         long minTime = 300;
-        //TODO проверить почему не удаляется указатель, а только если нажать другую кнопку, сделать доп вывод
-        //TODO проверить вылет, если очень частые клики
+
+
         while (!musicSampleQueue.isEmpty() && Duration.between(start, Instant.now()).toMillis() < music.getTimeLength() + 100) {
             finish = Instant.now();
             long timeElapsed = Duration.between(start, finish).toMillis();
@@ -75,7 +75,7 @@ public class MusicConductor extends BukkitRunnable {
                     pos = tempPos;
 
                     musicConductor.addPointerItem(pos);
-                    //System.out.println("Start " + Duration.between(start, Instant.now()).toMillis() + " MArk: " + sampleTime);
+                    //Sender.sendConsole("Start " + Duration.between(start, Instant.now()).toMillis() + " MArk: " + sampleTime);
                     isPlaced = true;
                     player.updateInventory();
 
@@ -94,7 +94,7 @@ public class MusicConductor extends BukkitRunnable {
                 if (isPlaced && sampleLength != null && Duration.between(sampleLength, Instant.now()).toMillis() >= minTime) {
                     //musicSampleQueue.remove();
                     musicConductor.deletePointerItem();
-                    //System.out.println("End " + Duration.between(start, Instant.now()).toMillis() + " MArk:" + sampleTime + " Dur: " + Duration.between(sampleLength, Instant.now()).toMillis());
+                    //Sender.sendConsole("End " + Duration.between(start, Instant.now()).toMillis() + " MArk:" + sampleTime + " Dur: " + Duration.between(sampleLength, Instant.now()).toMillis());
                     isPlaced = false;
                 }
             }
@@ -120,7 +120,7 @@ public class MusicConductor extends BukkitRunnable {
         //Вывод результата
         Sender.sendConsole("Result: " + resScore);
         checkResult(resScore);
-
+        player.closeInventory();
 
         BukkitRunnable br = PianoPlugin.tasksConductor.remove(player.getUniqueId());
         this.cancel();

@@ -2,13 +2,12 @@ package hse.minecraft.pianoplugin;
 
 import hse.minecraft.pianoplugin.commands.PianoCommand;
 import hse.minecraft.pianoplugin.commands.PlaySoundCommand;
+import hse.minecraft.pianoplugin.helpers.Sender;
 import hse.minecraft.pianoplugin.listeners.EntaranceListener;
 import hse.minecraft.pianoplugin.listeners.MenuListener;
 import hse.minecraft.pianoplugin.menuSystem.PlayerMenuUtil;
-import hse.minecraft.pianoplugin.music.Serialization;
 import hse.minecraft.pianoplugin.music.PlayerPlaylist;
-import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
+import hse.minecraft.pianoplugin.music.Serialization;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -22,18 +21,21 @@ import java.util.UUID;
 
 public final class PianoPlugin extends JavaPlugin {
     private static Plugin plugin;
-    //Меню каждого игрока
+    //Данные каждого игрока
     //public static final HashMap<Player, PlayerMenuUtil> menuUtilHashMap = new HashMap<>();
     public static final HashMap<UUID, PlayerPlaylist> playerPlaylists = new HashMap<>();
-    public static final HashMap<UUID, BukkitRunnable> tasksMusic = new HashMap<UUID, BukkitRunnable>();
-    public static final HashMap<UUID, BukkitRunnable> tasksConductor = new HashMap<UUID, BukkitRunnable>();
+
+    //Хэш мапы
+    public static final HashMap<UUID, BukkitRunnable> tasksMusic = new HashMap<>();
+    public static final HashMap<UUID, BukkitRunnable> tasksRandomMusic = new HashMap<>();
+    public static final HashMap<UUID, BukkitRunnable> tasksConductor = new HashMap<>();
 
     @Override
     public void onEnable() {
-        loadPlaylists();
         // Plugin startup logic
-        Bukkit.getConsoleSender().sendMessage(ChatColor.GOLD + "[HSE]~~~~~~~~ Piano plugin Started ~~~~~~~~");
-        Bukkit.getConsoleSender().sendMessage(ChatColor.GOLD + "[HSE] Created by John Sim");
+        Sender.sendConsole("Plugin Started");
+        Sender.sendConsole("Created by issimonovich@edu.hse");
+        loadPlaylists();
         PianoPlugin.plugin = this;
         registerListeners();
         registerCommands();
@@ -41,7 +43,7 @@ public final class PianoPlugin extends JavaPlugin {
 
     @Override
     public void onDisable() {
-        ArrayList<PlayerPlaylist> playlists = new ArrayList<PlayerPlaylist>(playerPlaylists.values());
+        ArrayList<PlayerPlaylist> playlists = new ArrayList<>(playerPlaylists.values());
         Path temp = Paths.get("tempSave.txt");
         Serialization.save(playlists, "savePianoPlugin.txt");
         // Plugin shutdown logic

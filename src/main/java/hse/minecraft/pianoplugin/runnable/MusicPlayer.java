@@ -60,7 +60,11 @@ public class MusicPlayer extends BukkitRunnable {
             }
         }
 
-        BukkitRunnable br = PianoPlugin.tasksMusic.remove(player.getUniqueId());
+        if (!isRandomPlaying) {
+            PianoPlugin.tasksMusic.remove(player.getUniqueId());
+        } else {
+            PianoPlugin.tasksRandomMusic.remove(player.getUniqueId());
+        }
         this.cancel();
 
         //BukkitRunnable br = PianoPlugin.tasksMusic.remove(player.getUniqueId());
