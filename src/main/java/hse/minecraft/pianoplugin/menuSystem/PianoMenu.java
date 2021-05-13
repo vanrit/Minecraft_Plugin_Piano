@@ -36,7 +36,7 @@ public class PianoMenu extends Menu {
 
     //Мап содержащий название звука блока и сам Sound
     public static final SortedMap<String, Sound> blockSounds = new TreeMap<>();
-    public static List<String> blockList = new ArrayList<String>(PianoMenu.blockSounds.keySet());
+    public static List<String> blockList;
 
     static {
         blockSounds.put("BASEDRUM", BLOCK_NOTE_BASEDRUM);
