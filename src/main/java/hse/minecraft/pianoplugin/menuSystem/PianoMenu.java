@@ -2,13 +2,14 @@ package hse.minecraft.pianoplugin.menuSystem;
 
 import hse.minecraft.pianoplugin.PianoPlugin;
 import hse.minecraft.pianoplugin.helpers.Sender;
-import hse.minecraft.pianoplugin.music.Music;
 import hse.minecraft.pianoplugin.music.Conductor;
+import hse.minecraft.pianoplugin.music.Music;
 import hse.minecraft.pianoplugin.music.MusicSample;
 import hse.minecraft.pianoplugin.music.SoundProducer;
 import hse.minecraft.pianoplugin.runnable.MusicConductor;
 import hse.minecraft.pianoplugin.runnable.MusicPlayer;
 import org.bukkit.ChatColor;
+import org.bukkit.Material;
 import org.bukkit.Sound;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryClickEvent;
@@ -164,6 +165,7 @@ public class PianoMenu extends Menu {
                 if (list.isEmpty()) break;
                 lastMusic = list.get(list.size() - 1);
 
+                player.sendMessage(ChatColor.DARK_PURPLE + "Now playing " + lastMusic.getName() + " with Random pitch");
                 removeTask(player, PianoPlugin.tasksRandomMusic);
 
                 br = new MusicPlayer(player, lastMusic, true);
@@ -172,7 +174,7 @@ public class PianoMenu extends Menu {
                 break;
 
             case DIAMOND:
-
+                deleteItem(event.getCurrentItem().getItemMeta().getDisplayName(), event.getCurrentItem().getType());
                 removeTask(player, PianoPlugin.tasksConductor);
 
                 br = new MusicConductor(player, Conductor.getMusic(), this);
@@ -319,5 +321,10 @@ public class PianoMenu extends Menu {
         for (HashMap.Entry<UUID, BukkitRunnable> entry : PianoPlugin.tasksConductor.entrySet()) {
             Sender.sendConsole(entry.getKey() + " Завершилось ли: " + entry.getValue().isCancelled());
         }
+    }
+
+    public void deleteItem(String name, Material material) {
+        ItemStack pointer = getItem(name, material);
+        getInventory().remove(pointer);
     }
 }

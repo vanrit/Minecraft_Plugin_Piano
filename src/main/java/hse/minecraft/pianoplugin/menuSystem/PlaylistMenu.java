@@ -136,6 +136,7 @@ public class PlaylistMenu extends Menu {
                 break;
             case PAPER:
                 Conductor.setToDefault();
+                player.sendMessage(ChatColor.GREEN + "Conductor is default");
                 break;
         }
     }
@@ -169,8 +170,8 @@ public class PlaylistMenu extends Menu {
         }
 
         inventory.setItem(9 * 4, setConductorItem);
-        inventory.setItem(9 * 4 + 1, randomPitchItem);
-        inventory.setItem(9 * 4 + 2, setDefault);
+        inventory.setItem(9 * 4 + 2, randomPitchItem);
+        inventory.setItem(9 * 4 + 1, setDefault);
         inventory.setItem(9 * 4 + 5, startDeleteItem);
         inventory.setItem(9 * 4 + 6, deleteAllItem);
         inventory.setItem(9 * 4 + 7, pianoItem);

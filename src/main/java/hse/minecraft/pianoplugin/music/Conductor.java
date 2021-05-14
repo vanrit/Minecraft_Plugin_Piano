@@ -23,11 +23,12 @@ public class Conductor {
     static public void typeMusicInfo() {
         Sender.sendConsole(music.getName());
         for (MusicSample item : music.getMusicVector()) {
-            Sender.sendConsole(item.getSoundName());
+            Sender.sendConsole(item.getSoundName() + "  " + item.getTime());
         }
     }
 
     static public void setToDefault() {
+        music = new Music();
         music.setName("Conductor Music");
         music.getMusicVector().add(new MusicSample(PianoMenu.blockList.get(1), 500));
         music.getMusicVector().add(new MusicSample(PianoMenu.blockList.get(2), 1000));

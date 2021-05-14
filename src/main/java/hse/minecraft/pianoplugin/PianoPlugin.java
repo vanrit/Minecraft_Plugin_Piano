@@ -6,6 +6,8 @@ import hse.minecraft.pianoplugin.helpers.Sender;
 import hse.minecraft.pianoplugin.listeners.EntaranceListener;
 import hse.minecraft.pianoplugin.listeners.MenuListener;
 import hse.minecraft.pianoplugin.menuSystem.PlayerMenuUtil;
+import hse.minecraft.pianoplugin.music.Conductor;
+import hse.minecraft.pianoplugin.music.Music;
 import hse.minecraft.pianoplugin.music.PlayerPlaylist;
 import hse.minecraft.pianoplugin.music.Serialization;
 import org.bukkit.entity.Player;
@@ -35,6 +37,11 @@ public final class PianoPlugin extends JavaPlugin {
         // Plugin startup logic
         Sender.sendConsole("Plugin Started");
         Sender.sendConsole("Created by issimonovich@edu.hse");
+
+        Music temp = Serialization.loadMusic("mainPianoMusic.json");
+        if (temp != null)
+            Conductor.setMusic(temp);
+
         loadPlaylists();
         PianoPlugin.plugin = this;
         registerListeners();
@@ -45,12 +52,15 @@ public final class PianoPlugin extends JavaPlugin {
     public void onDisable() {
         ArrayList<PlayerPlaylist> playlists = new ArrayList<>(playerPlaylists.values());
         Path temp = Paths.get("tempSave.txt");
-        Serialization.save(playlists, "savePianoPlugin.txt");
+
+        Serialization.saveMusic(Conductor.getMusic(), "mainPianoMusic.json");
+        Serialization.save(playlists, "savePianoPlugin.json");
         // Plugin shutdown logic
     }
 
     private void loadPlaylists() {
-        ArrayList<PlayerPlaylist> playlists = Serialization.load("savePianoPlugin.txt");
+        ArrayList<PlayerPlaylist> playlists = Serialization.load("savePianoPlugin.json");
+        if (playlists == null) return;
         for (PlayerPlaylist item : playlists) {
             playerPlaylists.put(item.getUniqueId(), item);
         }
