@@ -54,12 +54,12 @@ public final class PianoPlugin extends JavaPlugin {
         Path temp = Paths.get("tempSave.txt");
 
         Serialization.saveMusic(Conductor.getMusic(), "mainPianoMusic.json");
-        Serialization.save(playlists, "savePianoPlugin.json");
+        Serialization.savePlaylist(playlists, "savePianoPlugin.json");
         // Plugin shutdown logic
     }
 
     private void loadPlaylists() {
-        ArrayList<PlayerPlaylist> playlists = Serialization.load("savePianoPlugin.json");
+        ArrayList<PlayerPlaylist> playlists = Serialization.loadPlaylist("savePianoPlugin.json");
         if (playlists == null) return;
         for (PlayerPlaylist item : playlists) {
             playerPlaylists.put(item.getUniqueId(), item);

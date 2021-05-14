@@ -27,10 +27,10 @@ public class MusicPlayer extends BukkitRunnable {
 
     @Override
     public void run() {
-        conductPointer(tempMusic);
+        playMusic(tempMusic);
     }
 
-    void conductPointer(Music music) {
+    void playMusic(Music music) {
         SoundProducer soundProducer = new SoundProducer();
         if (music == null) return;
 

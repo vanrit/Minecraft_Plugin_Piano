@@ -140,6 +140,13 @@ public class PianoMenu extends Menu {
                             conductor.checkClick();
                         }
 
+                        //Промах
+                        if (conductor != null && blockList.indexOf(entry.getKey()) != conductor.getPos()) {
+                            //hitCounter++;
+                            //Sender.sendConsole("Hit counter" + hitCounter);
+                            conductor.setMiss();
+                        }
+
                     }
                     count++;
 

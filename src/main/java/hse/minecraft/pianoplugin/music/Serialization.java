@@ -43,7 +43,7 @@ public class Serialization {
         return music;
     }
 
-    public static void save(ArrayList<PlayerPlaylist> music, String path) {
+    public static void savePlaylist(ArrayList<PlayerPlaylist> music, String path) {
         Gson gson = new Gson();
         try (Writer writer = new FileWriter(path)) {
             gson.toJson(music, writer);
@@ -53,7 +53,7 @@ public class Serialization {
         }
     }
 
-    public static ArrayList<PlayerPlaylist> load(String path) {
+    public static ArrayList<PlayerPlaylist> loadPlaylist(String path) {
         Gson gson = new Gson();
         ArrayList<PlayerPlaylist> music = new ArrayList<>();
         Type listOfMyClassObject = new TypeToken<ArrayList<PlayerPlaylist>>() {

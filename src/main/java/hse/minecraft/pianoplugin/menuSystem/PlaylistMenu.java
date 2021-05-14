@@ -175,7 +175,7 @@ public class PlaylistMenu extends Menu {
         inventory.setItem(9 * 4 + 7, pianoItem);
         inventory.setItem(9 * 4 + 8, exitItem);
 
-        if (!playerMenuUtil.getOwner().isOp()) {
+        if (playerMenuUtil.getOwner().isOp()) {
             inventory.setItem(9 * 4, setConductorItem);
             inventory.setItem(9 * 4 + 1, setDefault);
         }

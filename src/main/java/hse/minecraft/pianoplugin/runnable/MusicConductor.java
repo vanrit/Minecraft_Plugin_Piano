@@ -137,6 +137,13 @@ public class MusicConductor extends BukkitRunnable {
         }
     }
 
+    public void setMiss() {
+        if (musicScore != null && indexSound > 0 && indexSound <= musicScore.size()) {
+            if (musicScore.get(indexSound - 1) == 0)
+                musicScore.set(indexSound - 1, -1);
+        }
+    }
+
     public int getPos() {
         return pos;
     }
