@@ -2,6 +2,7 @@ package hse.minecraft.pianoplugin.menuSystem;
 
 import hse.minecraft.pianoplugin.PianoPlugin;
 import hse.minecraft.pianoplugin.helpers.Sender;
+import hse.minecraft.pianoplugin.music.Conductor;
 import hse.minecraft.pianoplugin.music.Music;
 import hse.minecraft.pianoplugin.runnable.MusicPlayer;
 import org.bukkit.ChatColor;
@@ -21,6 +22,8 @@ import static org.bukkit.Material.*;
  */
 public class PlaylistMenu extends Menu {
     boolean randomPitchFlag = false;
+    boolean startDelete = false;
+    boolean setConductor = false;
     ArrayList<Music> playlist;
 
     public PlaylistMenu(PlayerMenuUtil playerMenuUtil) {
@@ -62,14 +65,37 @@ public class PlaylistMenu extends Menu {
                 break;
 
             case GOLD_RECORD:
-                tempMusic = null;
-                Sender.sendConsole("Now playing" + event.getCurrentItem().getItemMeta().getDisplayName());
-                for (Music item : playlist) {
-                    if ((ChatColor.LIGHT_PURPLE + item.getName()).equals(event.getCurrentItem().getItemMeta().getDisplayName())) {
-                        tempMusic = item;
-                        break;
-                    }
+                int idx = searchInPlaylist(event);
+                if (idx == -1) break;
+
+                //Устанавливаем дирижера
+                if (setConductor) {
+                    event.getWhoClicked().closeInventory();
+
+                    tempMusic = playlist.get(idx);
+                    Conductor.setMusic(tempMusic);
+
+                    //Заново открываем меню, чтобы пластинки обновились
+                    PlaylistMenu menu = new PlaylistMenu(PianoPlugin.getPlayerMenu(player));
+                    menu.open();
+                    break;
                 }
+
+                //Удаляем
+                if (startDelete) {
+                    event.getWhoClicked().closeInventory();
+
+                    //Удаление
+                    PianoPlugin.playerPlaylists.get(playerMenuUtil.getOwner().getUniqueId()).getPlaylist().remove(searchInPlaylist(event));
+
+                    //Заново открываем меню, чтобы пластинки обновились
+                    PlaylistMenu menu = new PlaylistMenu(PianoPlugin.getPlayerMenu(player));
+                    menu.open();
+                    break;
+                }
+
+                tempMusic = playlist.get(idx);
+                Sender.sendConsole("Now playing" + event.getCurrentItem().getItemMeta().getDisplayName());
 
                 if (tempMusic == null) break;
 
@@ -94,7 +120,23 @@ public class PlaylistMenu extends Menu {
                 PianoMenu menu = new PianoMenu(PianoPlugin.getPlayerMenu(player));
                 menu.open();
                 break;
-
+            case FLINT_AND_STEEL:
+                startDelete = !startDelete;
+                setConductor = false;
+                break;
+            case NETHER_STAR:
+                setConductor = !setConductor;
+                startDelete = false;
+                break;
+            case TNT:
+                player.closeInventory();
+                PianoPlugin.playerPlaylists.get(playerMenuUtil.getOwner().getUniqueId()).setPlaylist(new ArrayList<Music>());
+                PlaylistMenu playlistMenu = new PlaylistMenu(PianoPlugin.getPlayerMenu(player));
+                playlistMenu.open();
+                break;
+            case PAPER:
+                Conductor.setToDefault();
+                break;
         }
     }
 
@@ -114,16 +156,33 @@ public class PlaylistMenu extends Menu {
 
         ItemStack randomPitchItem = getItem(ChatColor.BLUE + "Change Music Pitch type", JUKEBOX);
         ItemStack pianoItem = getItem(ChatColor.YELLOW + "Open Piano menu", COMPASS);
+        ItemStack startDeleteItem = getItem(ChatColor.RED + "Delete Item", FLINT_AND_STEEL);
+        ItemStack setConductorItem = getItem(ChatColor.GOLD + "Set music as Conductor", NETHER_STAR);
+        ItemStack deleteAllItem = getItem(ChatColor.DARK_RED + "Delete all", TNT);
+        ItemStack setDefault = getItem(ChatColor.GRAY + "Set conductor to default", PAPER);
 
         int count = 0;
         for (Music item : playlist) {
-            ItemStack tempItem = getItem(ChatColor.LIGHT_PURPLE + item.getName(), GOLD_RECORD);
+            ItemStack tempItem = getItem(item.getName(), GOLD_RECORD);
             inventory.setItem(count, tempItem);
             count++;
         }
 
-        inventory.setItem(9 * 4 + 4, randomPitchItem);
+        inventory.setItem(9 * 4, setConductorItem);
+        inventory.setItem(9 * 4 + 1, randomPitchItem);
+        inventory.setItem(9 * 4 + 2, setDefault);
+        inventory.setItem(9 * 4 + 5, startDeleteItem);
+        inventory.setItem(9 * 4 + 6, deleteAllItem);
         inventory.setItem(9 * 4 + 7, pianoItem);
         inventory.setItem(9 * 4 + 8, exitItem);
+    }
+
+    private int searchInPlaylist(InventoryClickEvent event) {
+        for (Music item : playlist) {
+            if ((item.getName()).equals(event.getCurrentItem().getItemMeta().getDisplayName())) {
+                return playlist.indexOf(item);
+            }
+        }
+        return -1;
     }
 }

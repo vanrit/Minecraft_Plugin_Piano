@@ -3,10 +3,31 @@ package hse.minecraft.pianoplugin.music;
 import hse.minecraft.pianoplugin.helpers.Sender;
 import hse.minecraft.pianoplugin.menuSystem.PianoMenu;
 
-public class MusicForConductor {
-    static Music music = new Music();
+public class Conductor {
+    static Music music;
 
     static {
+        music = new Music();
+        setToDefault();
+    }
+
+    public static Music getMusic() {
+        return music;
+    }
+
+    public static void setMusic(Music tempMusic) {
+        music = tempMusic;
+        typeMusicInfo();
+    }
+
+    static public void typeMusicInfo() {
+        Sender.sendConsole(music.getName());
+        for (MusicSample item : music.getMusicVector()) {
+            Sender.sendConsole(item.getSoundName());
+        }
+    }
+
+    static public void setToDefault() {
         music.setName("Conductor Music");
         music.getMusicVector().add(new MusicSample(PianoMenu.blockList.get(1), 500));
         music.getMusicVector().add(new MusicSample(PianoMenu.blockList.get(2), 1000));
@@ -16,17 +37,5 @@ public class MusicForConductor {
         music.getMusicVector().add(new MusicSample(PianoMenu.blockList.get(3), 3000));
         music.getMusicVector().add(new MusicSample(PianoMenu.blockList.get(5), 3600));
         music.setTimeLength(3600);
-
-        for (MusicSample item : music.getMusicVector()) {
-            Sender.sendConsole(item.getSoundName());
-        }
-    }
-
-    public static Music getMusic() {
-        return music;
-    }
-
-    public static void setMusic(Music tempMusic) {
-        music = tempMusic;
     }
 }

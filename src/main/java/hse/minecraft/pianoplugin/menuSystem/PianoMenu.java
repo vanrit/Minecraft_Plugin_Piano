@@ -3,7 +3,7 @@ package hse.minecraft.pianoplugin.menuSystem;
 import hse.minecraft.pianoplugin.PianoPlugin;
 import hse.minecraft.pianoplugin.helpers.Sender;
 import hse.minecraft.pianoplugin.music.Music;
-import hse.minecraft.pianoplugin.music.MusicForConductor;
+import hse.minecraft.pianoplugin.music.Conductor;
 import hse.minecraft.pianoplugin.music.MusicSample;
 import hse.minecraft.pianoplugin.music.SoundProducer;
 import hse.minecraft.pianoplugin.runnable.MusicConductor;
@@ -175,7 +175,7 @@ public class PianoMenu extends Menu {
 
                 removeTask(player, PianoPlugin.tasksConductor);
 
-                br = new MusicConductor(player, MusicForConductor.getMusic(), this);
+                br = new MusicConductor(player, Conductor.getMusic(), this);
                 startTask(br, player, PianoPlugin.tasksConductor);
 
                 break;
