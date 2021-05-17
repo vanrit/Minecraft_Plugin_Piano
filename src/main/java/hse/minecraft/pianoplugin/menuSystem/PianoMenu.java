@@ -155,6 +155,7 @@ public class PianoMenu extends Menu {
                 break;
 
             case PUMPKIN:
+                player.sendMessage(ChatColor.GREEN+"Playing last music with normal pitch");
                 list = PianoPlugin.playerPlaylists.get(playerMenuUtil.getOwner().getUniqueId()).getPlaylist();
                 if (list.isEmpty()) break;
                 lastMusic = list.get(list.size() - 1);
@@ -168,6 +169,7 @@ public class PianoMenu extends Menu {
                 break;
 
             case JACK_O_LANTERN:
+                player.sendMessage(ChatColor.GREEN+"Playing last music with random pitch");
                 list = PianoPlugin.playerPlaylists.get(playerMenuUtil.getOwner().getUniqueId()).getPlaylist();
                 if (list.isEmpty()) break;
                 lastMusic = list.get(list.size() - 1);
@@ -181,6 +183,7 @@ public class PianoMenu extends Menu {
                 break;
 
             case DIAMOND:
+                player.sendMessage(ChatColor.GREEN+"Mini game is started");
                 deleteItem(event.getCurrentItem().getItemMeta().getDisplayName(), event.getCurrentItem().getType());
                 removeTask(player, PianoPlugin.tasksConductor);
 

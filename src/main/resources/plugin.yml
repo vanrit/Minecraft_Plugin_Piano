@@ -2,8 +2,8 @@ name: PianoPlugin
 version: ${project.version}
 main: hse.minecraft.pianoplugin.PianoPlugin
 commands:
-  piano:
-    description: show piano inventory panel
+  menu:
+    description: show piano or playlist inventory panel
   plays:
     description: play sound from minecraft from Enum Sound
     usage: /plays [name]

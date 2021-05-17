@@ -72,7 +72,7 @@ public final class PianoPlugin extends JavaPlugin {
     }
 
     private void registerCommands() {
-        getCommand("piano").setExecutor(new PianoCommand());
+        getCommand("menu").setExecutor(new PianoCommand());
         getCommand("plays").setExecutor(new PlaySoundCommand());
     }
 

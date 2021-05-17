@@ -72,6 +72,7 @@ public class PlaylistMenu extends Menu {
                 if (setConductor) {
                     event.getWhoClicked().closeInventory();
 
+                    player.sendMessage(ChatColor.GREEN + "Set as conductor" + event.getCurrentItem().getItemMeta().getDisplayName());
                     tempMusic = playlist.get(idx);
                     Conductor.setMusic(tempMusic);
 
@@ -85,6 +86,7 @@ public class PlaylistMenu extends Menu {
                 if (startDelete) {
                     event.getWhoClicked().closeInventory();
 
+                    player.sendMessage(ChatColor.GREEN + "Deleted" + event.getCurrentItem().getItemMeta().getDisplayName());
                     //Удаление
                     PianoPlugin.playerPlaylists.get(playerMenuUtil.getOwner().getUniqueId()).getPlaylist().remove(searchInPlaylist(event));
 
@@ -120,20 +122,25 @@ public class PlaylistMenu extends Menu {
                 PianoMenu menu = new PianoMenu(PianoPlugin.getPlayerMenu(player));
                 menu.open();
                 break;
+
             case FLINT_AND_STEEL:
                 startDelete = !startDelete;
                 setConductor = false;
                 break;
+
+
             case NETHER_STAR:
                 setConductor = !setConductor;
                 startDelete = false;
                 break;
+
             case TNT:
                 player.closeInventory();
                 PianoPlugin.playerPlaylists.get(playerMenuUtil.getOwner().getUniqueId()).setPlaylist(new ArrayList<Music>());
                 PlaylistMenu playlistMenu = new PlaylistMenu(PianoPlugin.getPlayerMenu(player));
                 playlistMenu.open();
                 break;
+
             case PAPER:
                 Conductor.setToDefault();
                 player.sendMessage(ChatColor.GREEN + "Conductor is default");
